@@ -53,11 +53,6 @@ param
        [string] $nchBranch                 = ""
 )
 
-# TODO: Remove these forced variables - start
-$hostName = "PIP-DAZEULONO001"
-
-# TODO: Remove these forced variables - end
-
 $verbosePreference = "SilentlyContinue"
 $warningPreference = 'Continue'
 $errorActionPreference = 'Stop'
