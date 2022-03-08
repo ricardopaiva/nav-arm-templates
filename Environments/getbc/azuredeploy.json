@@ -4,28 +4,28 @@
     "parameters": {
         "vmName": {
             "type": "string",
-			"defaultValue": "",
+            "defaultValue": "DAZEU-HCSTest",
             "minLength": 3,
             "metadata": {
-                "Description": "Select the name of the deployment"
+                "Description": "Select the name of the deployment  // TODO: Remove the default value"
             }
         },
         "TimezoneId": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "GMT Standard Time",
-            "allowedValues": [ "Dateline Standard Time","UTC-11","Aleutian Standard Time","Hawaiian Standard Time","Marquesas Standard Time","Alaskan Standard Time","UTC-09","Pacific Standard Time (Mexico)","UTC-08","Pacific Standard Time","US Mountain Standard Time","Mountain Standard Time (Mexico)","Mountain Standard Time","Central America Standard Time","Central Standard Time","Easter Island Standard Time","Central Standard Time (Mexico)","Canada Central Standard Time","SA Pacific Standard Time","Eastern Standard Time (Mexico)","Eastern Standard Time","Haiti Standard Time","Cuba Standard Time","US Eastern Standard Time","Turks And Caicos Standard Time","Paraguay Standard Time","Atlantic Standard Time","Venezuela Standard Time","Central Brazilian Standard Time","SA Western Standard Time","Pacific SA Standard Time","Newfoundland Standard Time","Tocantins Standard Time","E. South America Standard Time","SA Eastern Standard Time","Argentina Standard Time","Greenland Standard Time","Montevideo Standard Time","Magallanes Standard Time","Saint Pierre Standard Time","Bahia Standard Time","UTC-02","Mid-Atlantic Standard Time","Azores Standard Time","Cape Verde Standard Time","UTC","Morocco Standard Time","GMT Standard Time","Greenwich Standard Time","W. Europe Standard Time","Central Europe Standard Time","Romance Standard Time","Central European Standard Time","W. Central Africa Standard Time","Jordan Standard Time","GTB Standard Time","Middle East Standard Time","Egypt Standard Time","E. Europe Standard Time","Syria Standard Time","West Bank Standard Time","South Africa Standard Time","FLE Standard Time","Israel Standard Time","Kaliningrad Standard Time","Sudan Standard Time","Libya Standard Time","Namibia Standard Time","Arabic Standard Time","Turkey Standard Time","Arab Standard Time","Belarus Standard Time","Russian Standard Time","E. Africa Standard Time","Iran Standard Time","Arabian Standard Time","Astrakhan Standard Time","Azerbaijan Standard Time","Russia Time Zone 3","Mauritius Standard Time","Saratov Standard Time","Georgian Standard Time","Caucasus Standard Time","Afghanistan Standard Time","West Asia Standard Time","Ekaterinburg Standard Time","Pakistan Standard Time","India Standard Time","Sri Lanka Standard Time","Nepal Standard Time","Central Asia Standard Time","Bangladesh Standard Time","Omsk Standard Time","Myanmar Standard Time","SE Asia Standard Time","Altai Standard Time","W. Mongolia Standard Time","North Asia Standard Time","N. Central Asia Standard Time","Tomsk Standard Time","China Standard Time","North Asia East Standard Time","Singapore Standard Time","W. Australia Standard Time","Taipei Standard Time","Ulaanbaatar Standard Time","North Korea Standard Time","Aus Central W. Standard Time","Transbaikal Standard Time","Tokyo Standard Time","Korea Standard Time","Yakutsk Standard Time","Cen. Australia Standard Time","AUS Central Standard Time","E. Australia Standard Time","AUS Eastern Standard Time","West Pacific Standard Time","Tasmania Standard Time","Vladivostok Standard Time","Lord Howe Standard Time","Bougainville Standard Time","Russia Time Zone 10","Magadan Standard Time","Norfolk Standard Time","Sakhalin Standard Time","Central Pacific Standard Time","Russia Time Zone 11","New Zealand Standard Time","UTC+12","Fiji Standard Time","Kamchatka Standard Time","Chatham Islands Standard Time","UTC+13","Tonga Standard Time","Samoa Standard Time","Line Islands Standard Time" ],
+            "allowedValues": ["Dateline Standard Time", "UTC-11", "Aleutian Standard Time", "Hawaiian Standard Time", "Marquesas Standard Time", "Alaskan Standard Time", "UTC-09", "Pacific Standard Time (Mexico)", "UTC-08", "Pacific Standard Time", "US Mountain Standard Time", "Mountain Standard Time (Mexico)", "Mountain Standard Time", "Central America Standard Time", "Central Standard Time", "Easter Island Standard Time", "Central Standard Time (Mexico)", "Canada Central Standard Time", "SA Pacific Standard Time", "Eastern Standard Time (Mexico)", "Eastern Standard Time", "Haiti Standard Time", "Cuba Standard Time", "US Eastern Standard Time", "Turks And Caicos Standard Time", "Paraguay Standard Time", "Atlantic Standard Time", "Venezuela Standard Time", "Central Brazilian Standard Time", "SA Western Standard Time", "Pacific SA Standard Time", "Newfoundland Standard Time", "Tocantins Standard Time", "E. South America Standard Time", "SA Eastern Standard Time", "Argentina Standard Time", "Greenland Standard Time", "Montevideo Standard Time", "Magallanes Standard Time", "Saint Pierre Standard Time", "Bahia Standard Time", "UTC-02", "Mid-Atlantic Standard Time", "Azores Standard Time", "Cape Verde Standard Time", "UTC", "Morocco Standard Time", "GMT Standard Time", "Greenwich Standard Time", "W. Europe Standard Time", "Central Europe Standard Time", "Romance Standard Time", "Central European Standard Time", "W. Central Africa Standard Time", "Jordan Standard Time", "GTB Standard Time", "Middle East Standard Time", "Egypt Standard Time", "E. Europe Standard Time", "Syria Standard Time", "West Bank Standard Time", "South Africa Standard Time", "FLE Standard Time", "Israel Standard Time", "Kaliningrad Standard Time", "Sudan Standard Time", "Libya Standard Time", "Namibia Standard Time", "Arabic Standard Time", "Turkey Standard Time", "Arab Standard Time", "Belarus Standard Time", "Russian Standard Time", "E. Africa Standard Time", "Iran Standard Time", "Arabian Standard Time", "Astrakhan Standard Time", "Azerbaijan Standard Time", "Russia Time Zone 3", "Mauritius Standard Time", "Saratov Standard Time", "Georgian Standard Time", "Caucasus Standard Time", "Afghanistan Standard Time", "West Asia Standard Time", "Ekaterinburg Standard Time", "Pakistan Standard Time", "India Standard Time", "Sri Lanka Standard Time", "Nepal Standard Time", "Central Asia Standard Time", "Bangladesh Standard Time", "Omsk Standard Time", "Myanmar Standard Time", "SE Asia Standard Time", "Altai Standard Time", "W. Mongolia Standard Time", "North Asia Standard Time", "N. Central Asia Standard Time", "Tomsk Standard Time", "China Standard Time", "North Asia East Standard Time", "Singapore Standard Time", "W. Australia Standard Time", "Taipei Standard Time", "Ulaanbaatar Standard Time", "North Korea Standard Time", "Aus Central W. Standard Time", "Transbaikal Standard Time", "Tokyo Standard Time", "Korea Standard Time", "Yakutsk Standard Time", "Cen. Australia Standard Time", "AUS Central Standard Time", "E. Australia Standard Time", "AUS Eastern Standard Time", "West Pacific Standard Time", "Tasmania Standard Time", "Vladivostok Standard Time", "Lord Howe Standard Time", "Bougainville Standard Time", "Russia Time Zone 10", "Magadan Standard Time", "Norfolk Standard Time", "Sakhalin Standard Time", "Central Pacific Standard Time", "Russia Time Zone 11", "New Zealand Standard Time", "UTC+12", "Fiji Standard Time", "Kamchatka Standard Time", "Chatham Islands Standard Time", "UTC+13", "Tonga Standard Time", "Samoa Standard Time", "Line Islands Standard Time"],
             "metadata": {
                 "Description": "Timezone of VM."
             }
         },
         "RemoteDesktopAccess": {
-		    "type": "string",
-			"defaultValue": "",
+            "type": "string",
+            "defaultValue": "*",
             "minLength": 1,
             "metadata": {
-                "Description": "Specify * (star) to allow all remote desktop access, specify an address range using CIDR notation, e.g. 10.0.0.0/24 or an IP address"
+                "Description": "Specify * (star) to allow all remote desktop access, specify an address range using CIDR notation, e.g. 10.0.0.0/24 or an IP address  // TODO: Remove the default value"
             }
-		},
+        },
         "OperatingSystem": {
             "type": "string",
             "defaultValue": "Windows Server 2019",
@@ -43,6 +43,7 @@
             "type": "string",
             "defaultValue": "Standard_D4_v3",
             "allowedValues": [
+                "Standard_A3",
                 "Standard_D2_v2",
                 "Standard_D3_v2",
                 "Standard_D4_v2",
@@ -61,7 +62,7 @@
                 "Standard_D16s_v3"
             ],
             "metadata": {
-                "Description": "Select the VM size of the deployment"
+                "Description": "Select the VM size of the deployment  // TODO: Remove or add all the A* VMs"
             }
         },
         "StorageAccountType": {
@@ -93,7 +94,7 @@
         },
         "adminPassword": {
             "type": "securestring",
-			"defaultValue": "",
+            "defaultValue": "",
             "metadata": {
                 "Description": "Specify administrator password for VM, Business Central and SQL (if applicable)"
             }
@@ -121,17 +122,17 @@
             }
         },
         "AssignPremiumPlan": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "No",
-            "allowedValues": [ "Yes", "No" ],
+            "allowedValues": ["Yes", "No"],
             "metadata": {
                 "Description": "Assign Premium Plan to admin user. This setting only makes sense for Sandbox images (mcr.microsoft.com/businesscentral/sandbox:*)."
             }
         },
         "CreateTestUsers": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "No",
-            "allowedValues": [ "Yes", "No" ],
+            "allowedValues": ["Yes", "No"],
             "metadata": {
                 "Description": "Create a set of users for test purposes (ExternalAccountant, Premium, Essential, InternalAdmin, TeamMember and DelegatedAdmin). This setting only makes sense for Sandbox images (mcr.microsoft.com/businesscentral/sandbox:*)."
             }
@@ -151,39 +152,39 @@
             }
         },
         "EnableTaskScheduler": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "Yes",
-            "allowedValues": [ "Yes", "No" ],
+            "allowedValues": ["Yes", "No"],
             "metadata": {
                 "Description": "Enable Task Scheduler in Container"
             }
         },
         "Multitenant": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "No",
-            "allowedValues": [ "Yes", "No" ],
+            "allowedValues": ["Yes", "No"],
             "metadata": {
                 "Description": "Should Business Central be setup for multi tenancy"
             }
         },
-		"Office365UserName": {
-			"type": "string",
-			"defaultValue": "",
-			"metadata": {
-				"Description": "Enter Office 365 Administrator Email (leave empty to skip Office 365 integration)"
-			}
-		},
-		"Office365Password": {
-			"type": "securestring",
-			"defaultValue": "",
-			"metadata": {
-				"Description": "Enter Office 365 Administrator Password (leave empty if no Office 365 integration)"
-			}
-		},
+        "Office365UserName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "Description": "Enter Office 365 Administrator Email (leave empty to skip Office 365 integration)"
+            }
+        },
+        "Office365Password": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "Description": "Enter Office 365 Administrator Password (leave empty if no Office 365 integration)"
+            }
+        },
         "CreateAadUsers": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "No",
-            "allowedValues": [ "Yes", "No" ],
+            "allowedValues": ["Yes", "No"],
             "metadata": {
                 "Description": "Create users from the Aad (users in Office 365) as SUPER (only when using Office 365 integration)"
             }
@@ -216,38 +217,38 @@
                 "Description": "Optional: Specify a Url to a PowerShell script that should be executed on the VM to do the final setup of the VM."
             }
         },
-		"BingMapsKey": {
-			"type": "string",
-			"defaultValue": "",
-			"metadata": {
-				"Description": "Bing Maps Key for Bing Maps Integration App installation (leave empty to skip Bing Maps Integration)"
-			}
-		},
-		"RequestToken": {
-			"type": "string",
-			"defaultValue": "",
-			"metadata": {
-				"Description": "Request Token for http request service allowing predefined commands to be invoked through a simple http request"
-			}
-		},
+        "BingMapsKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "Description": "Bing Maps Key for Bing Maps Integration App installation (leave empty to skip Bing Maps Integration)"
+            }
+        },
+        "RequestToken": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "Description": "Request Token for http request service allowing predefined commands to be invoked through a simple http request"
+            }
+        },
         "CreateStorageQueue": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "No",
-            "allowedValues": [ "Yes", "No" ],
+            "allowedValues": ["Yes", "No"],
             "metadata": {
                 "Description": "Create storage queue and listen to messages in the queue for predefined commands to be invoked"
             }
         },
         "RunWindowsUpdate": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "No",
-            "allowedValues": [ "Yes", "No" ],
+            "allowedValues": ["Yes", "No"],
             "metadata": {
                 "Description": "Run Windows Update after Deployment (might take significant time)"
             }
         },
         "ContactEMailForLetsEncrypt": {
-		    "type": "string",
+            "type": "string",
             "defaultValue": "",
             "metadata": {
                 "Description": "Specify an email address of the person accepting subscriber agreement for LetsEncrypt (https://letsencrypt.org/repository/) in order to use Lets Encrypt to generate a secure SSL certificate, which is valid for 3 months."
@@ -308,8 +309,7 @@
         "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
         "ScriptCommandToExecute": "powershell.exe -executionpolicy unrestricted -file "
     },
-    "resources": [
-        {
+    "resources": [{
             "apiVersion": "2019-04-01",
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
@@ -321,8 +321,7 @@
             "properties": {
                 "supportsHttpsTrafficOnly": true
             }
-        },
-        {
+        }, {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[variables('publicIPAddressName')]",
@@ -333,17 +332,15 @@
                     "domainNameLabel": "[variables('dnsName')]"
                 }
             }
-        },
-        {
+        }, {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Network/networkSecurityGroups",
             "name": "networkSecurityGroup",
             "location": "[resourceGroup().location]",
             "properties": {
-                "securityRules": [
-                    {
+                "securityRules": [{
                         "name": "RDP",
-                        "properties":{
+                        "properties": {
                             "description": "Remote Desktop Access",
                             "protocol": "Tcp",
                             "sourcePortRange": "*",
@@ -354,8 +351,7 @@
                             "priority": 100,
                             "direction": "Inbound"
                         }
-                    },
-                    {
+                    }, {
                         "name": "HTTP",
                         "properties": {
                             "description": "Http access",
@@ -368,8 +364,7 @@
                             "priority": 200,
                             "direction": "Inbound"
                         }
-                    },
-                    {
+                    }, {
                         "name": "FILES",
                         "properties": {
                             "description": "File access",
@@ -382,8 +377,7 @@
                             "priority": 210,
                             "direction": "Inbound"
                         }
-                    },
-                    {
+                    }, {
                         "name": "HTTPS",
                         "properties": {
                             "description": "Http access over Secure Socket Layer",
@@ -396,8 +390,7 @@
                             "priority": 220,
                             "direction": "Inbound"
                         }
-                    },
-                    {
+                    }, {
                         "name": "Soap",
                         "properties": {
                             "description": "Access to Soap Web Services",
@@ -410,8 +403,7 @@
                             "priority": 230,
                             "direction": "Inbound"
                         }
-                    },
-                    {
+                    }, {
                         "name": "OData",
                         "properties": {
                             "description": "Access to OData Services",
@@ -424,8 +416,7 @@
                             "priority": 240,
                             "direction": "Inbound"
                         }
-                    },
-                    {
+                    }, {
                         "name": "Developer",
                         "properties": {
                             "description": "Access to Developer Services",
@@ -441,14 +432,13 @@
                     }
                 ]
             }
-        },
-        {
+        }, {
             "apiVersion": "2015-05-01-preview",
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('virtualNetworkName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-				"[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSecurityGroupName'))]"
+                "[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "addressSpace": {
@@ -456,8 +446,7 @@
                         "[variables('addressPrefix')]"
                     ]
                 },
-                "subnets": [
-                    {
+                "subnets": [{
                         "name": "[variables('subnetName')]",
                         "properties": {
                             "addressPrefix": "[variables('subnetPrefix')]",
@@ -468,8 +457,7 @@
                     }
                 ]
             }
-        },
-        {
+        }, {
             "apiVersion": "2018-11-01",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[variables('nic1Name')]",
@@ -477,14 +465,13 @@
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
                 "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-				"[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSecurityGroupName'))]"
+                "[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSecurityGroupName'))]"
             ],
             "properties": {
                 "networkSecurityGroup": {
                     "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
                 },
-                "ipConfigurations": [
-                    {
+                "ipConfigurations": [{
                         "name": "ipconfig1",
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
@@ -498,8 +485,7 @@
                     }
                 ]
             }
-        },
-        {
+        }, {
             "apiVersion": "2018-10-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('server1Name')]",
@@ -534,21 +520,19 @@
                         "name": "[variables('OSDiskName')]",
                         "caching": "ReadWrite",
                         "managedDisk": {
-                          "storageAccountType": "[variables('storageAccountType')]"
+                            "storageAccountType": "[variables('storageAccountType')]"
                         },
                         "diskSizeGB": 128
                     }
                 },
                 "networkProfile": {
-                    "networkInterfaces": [
-                        {
+                    "networkInterfaces": [{
                             "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic1Name'))]"
                         }
                     ]
                 }
             }
-        },
-        {
+        }, {
             "apiVersion": "2015-06-15",
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('server1Name'),'/vmextension1')]",
@@ -566,18 +550,18 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[uri('https://raw.githubusercontent.com/microsoft/nav-arm-templates/master/','initialize.ps1')]"
+                        "[uri('https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/','initialize.ps1')]"
                     ],
-                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/microsoft/nav-arm-templates/master/getbc.json\" -hostName \"',reference(variables('publicIPAddressName')).dnsSettings.fqdn,'\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -LicenseFileUri \"',variables('licenseFileUri'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -BingMapsKey \"',variables('BingMapsKey'),'\" -RequestToken \"',variables('RequestToken'),'\" -CreateStorageQueue \"',variables('CreateStorageQueue'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -style \"',variables('style'),'\"')]"
+                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/getbc.json\" -hostName \"',reference(variables('publicIPAddressName')).dnsSettings.fqdn,'\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -LicenseFileUri \"',variables('licenseFileUri'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -BingMapsKey \"',variables('BingMapsKey'),'\" -RequestToken \"',variables('RequestToken'),'\" -CreateStorageQueue \"',variables('CreateStorageQueue'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -style \"',variables('style'),'\"')]"
                 },
                 "protectedSettings": {}
             }
         }
     ],
     "outputs": {
-		"landingPage": {
-			"value": "[concat('http://',reference(variables('publicIPAddressName')).dnsSettings.fqdn)]",
-			"type": "string"
-		}
+        "landingPage": {
+            "value": "[concat('http://',reference(variables('publicIPAddressName')).dnsSettings.fqdn)]",
+            "type": "string"
+        }
     }
 }
