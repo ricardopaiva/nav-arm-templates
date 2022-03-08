@@ -1,7 +1,7 @@
 # usage initialize.ps1
 param
 (
-       [string] $templateLink              = "https://raw.githubusercontent.com/Microsoft/nav-arm-templates/master/navdeveloperpreview.json",
+       [string] $templateLink              = "https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/navdeveloperpreview.json",
        [string] $containerName             = "navserver",
        [string] $hostName                  = "",
        [string] $storageConnectionString   = "",
@@ -52,6 +52,11 @@ param
        [string] $AddTraefik                = "No",
        [string] $nchBranch                 = ""
 )
+
+# TODO: Remove these forced variables - start
+$hostName = "PIP-DAZEULONO001"
+
+# TODO: Remove these forced variables - end
 
 $verbosePreference = "SilentlyContinue"
 $warningPreference = 'Continue'
