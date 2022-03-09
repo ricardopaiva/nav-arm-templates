@@ -2,6 +2,22 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "publicIPAddressName": {
+            "type": "string",
+            "defaultValue": "",
+            "minLength": 3,
+            "metadata": {
+                "Description": "TODO: Review this parameter"
+            }
+        },
+        "networkInterfaceName": {
+            "type": "string",
+            "defaultValue": "",
+            "minLength": 3,
+            "metadata": {
+                "Description": "TODO: Review this parameter"
+            }
+        },
         "vmName": {
             "type": "string",
             "defaultValue": "",
@@ -256,6 +272,7 @@
         }
     },
     "variables": {
+        "networkInterfaceName": "[parameters('networkInterfaceName')]",
         "vmName": "[trim(parameters('vmName'))]",
         "TimezoneId": "[parameters('TimezoneId')]",
         "vmSize": "[parameters('vmSize')]",
@@ -295,7 +312,8 @@
         "storageAccountType": "[parameters('StorageAccountType')]",
         "OSDiskName": "[concat(variables('vmName'),'_osdisk')]",
         "vmStorageAccountContainerName": "vhds",
-        "publicIPAddressName": "Microsoft.Network/publicIPAddresses/PIP-DAZEULONO001",
+        //"publicIPAddressName": "[concat(variables('vmName'), '_pip')]",
+        "publicIPAddressName": "[parameters('publicIPAddressName')]",
         "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
         "networkSecurityGroupName": "networksecuritygroup",
         "dnsName": "[tolower(variables('vmName'))]",
@@ -366,7 +384,8 @@
                 },
                 "networkProfile": {
                     "networkInterfaces": [{
-                          "id": "[resourceId('Microsoft.Network/networkInterfaces/', 'dazeulono009999')]"
+                          //"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic1Name'))]"
+                          "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('networkInterfaceName'))]"
                         }
                     ]
                 }
