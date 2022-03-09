@@ -4,10 +4,10 @@
     "parameters": {
         "vmName": {
             "type": "string",
-            "defaultValue": "DAZEU-HCSTest",
+            "defaultValue": "",
             "minLength": 3,
             "metadata": {
-                "Description": "Select the name of the deployment  // TODO: Remove the default value"
+                "Description": "Select the name of the deployment"
             }
         },
         "TimezoneId": {
@@ -20,10 +20,10 @@
         },
         "RemoteDesktopAccess": {
             "type": "string",
-            "defaultValue": "*",
+            "defaultValue": "",
             "minLength": 1,
             "metadata": {
-                "Description": "Specify * (star) to allow all remote desktop access, specify an address range using CIDR notation, e.g. 10.0.0.0/24 or an IP address  // TODO: Remove the default value"
+                "Description": "Specify * (star) to allow all remote desktop access, specify an address range using CIDR notation, e.g. 10.0.0.0/24 or an IP address"
             }
         },
         "OperatingSystem": {
@@ -41,7 +41,7 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard_A3",
+            "defaultValue": "Standard_D4_v3",
             "allowedValues": [
                 "Standard_A3",
                 "Standard_D2_v2",
@@ -62,7 +62,7 @@
                 "Standard_D16s_v3"
             ],
             "metadata": {
-                "Description": "Select the VM size of the deployment  // TODO: Remove or add all the A* VMs - Update the default value to Standard_D4_v3"
+                "Description": "Select the VM size of the deployment  // TODO: Remove or add all the A* VMs"
             }
         },
         "StorageAccountType": {
@@ -295,8 +295,7 @@
         "storageAccountType": "[parameters('StorageAccountType')]",
         "OSDiskName": "[concat(variables('vmName'),'_osdisk')]",
         "vmStorageAccountContainerName": "vhds",
-        //"publicIPAddressName": "[concat(variables('vmName'), '_pip')]",
-        "publicIPAddressName": "PIP-DAZEULONO001",
+        "publicIPAddressName": "Microsoft.Network/publicIPAddresses/PIP-DAZEULONO001",
         "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
         "networkSecurityGroupName": "networksecuritygroup",
         "dnsName": "[tolower(variables('vmName'))]",
@@ -322,115 +321,18 @@
             "properties": {
                 "supportsHttpsTrafficOnly": true
             }
-        }, {
-            "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "networkSecurityGroup",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "securityRules": [{
-                        "name": "RDP",
-                        "properties": {
-                            "description": "Remote Desktop Access",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "3389",
-                            "sourceAddressPrefix": "[variables('RemoteDesktopAccess')]",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 100,
-                            "direction": "Inbound"
-                        }
-                    }, {
-                        "name": "HTTP",
-                        "properties": {
-                            "description": "Http access",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "80",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 200,
-                            "direction": "Inbound"
-                        }
-                    }, {
-                        "name": "FILES",
-                        "properties": {
-                            "description": "File access",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "8080",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 210,
-                            "direction": "Inbound"
-                        }
-                    }, {
-                        "name": "HTTPS",
-                        "properties": {
-                            "description": "Http access over Secure Socket Layer",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "443",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 220,
-                            "direction": "Inbound"
-                        }
-                    }, {
-                        "name": "Soap",
-                        "properties": {
-                            "description": "Access to Soap Web Services",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "7047",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 230,
-                            "direction": "Inbound"
-                        }
-                    }, {
-                        "name": "OData",
-                        "properties": {
-                            "description": "Access to OData Services",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "7048",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 240,
-                            "direction": "Inbound"
-                        }
-                    }, {
-                        "name": "Developer",
-                        "properties": {
-                            "description": "Access to Developer Services",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "7049",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*",
-                            "access": "Allow",
-                            "priority": 250,
-                            "direction": "Inbound"
-                        }
-                    }
-                ]
-            }
-        }, {
+        },
+        {
             "apiVersion": "2018-10-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('server1Name')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-                "['Microsoft.Network/networkInterfaces/dazeulono001468']"
+                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
             ],
+            "tags": {
+              "Run Schedule": "24/7"
+            },
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "[variables('vmSize')]"
@@ -464,7 +366,7 @@
                 },
                 "networkProfile": {
                     "networkInterfaces": [{
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces/dazeulono001468')]"
+                          "id": "[resourceId('Microsoft.Network/networkInterfaces/', 'dazeulono009999')]"
                         }
                     ]
                 }
@@ -489,16 +391,10 @@
                     "fileUris": [
                         "[uri('https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/','initialize.ps1')]"
                     ],
-                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/getbc.json\" -hostName \"',reference(variables('publicIPAddressName')).dnsSettings.fqdn,'\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -LicenseFileUri \"',variables('licenseFileUri'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -BingMapsKey \"',variables('BingMapsKey'),'\" -RequestToken \"',variables('RequestToken'),'\" -CreateStorageQueue \"',variables('CreateStorageQueue'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -style \"',variables('style'),'\"')]"
+                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/getbc.json\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -LicenseFileUri \"',variables('licenseFileUri'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -BingMapsKey \"',variables('BingMapsKey'),'\" -RequestToken \"',variables('RequestToken'),'\" -CreateStorageQueue \"',variables('CreateStorageQueue'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -style \"',variables('style'),'\"')]"
                 },
                 "protectedSettings": {}
             }
         }
-    ],
-    "outputs": {
-        "landingPage": {
-            "value": "[concat('http://',reference(variables('publicIPAddressName')).dnsSettings.fqdn)]",
-            "type": "string"
-        }
-    }
+    ]
 }
