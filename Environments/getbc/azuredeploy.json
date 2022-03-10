@@ -5,7 +5,6 @@
         "publicIPAddressName": {
             "type": "string",
             "defaultValue": "",
-            "minLength": 3,
             "metadata": {
                 "Description": "TODO: Review this parameter"
             }
