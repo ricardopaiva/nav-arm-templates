@@ -111,6 +111,8 @@ if (Test-Path -Path "C:\demo\*\BcContainerHelper.psm1") {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
+. "c:\demo\SetupHybridCloudServer.ps1"
+
 if ($AddTraefik -eq "Yes") {
 
     if (Test-Path "c:\myfolder\certificate.pfx") {

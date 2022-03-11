@@ -1,7 +1,7 @@
 # usage initialize.ps1
 param
 (
-       [string] $templateLink              = "https://raw.githubusercontent.com/Microsoft/nav-arm-templates/master/navdeveloperpreview.json",
+       [string] $templateLink              = "https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/navdeveloperpreview.json",
        [string] $containerName             = "navserver",
        [string] $hostName                  = "",
        [string] $storageConnectionString   = "",
@@ -50,7 +50,11 @@ param
        [string] $requestToken              = "",
        [string] $createStorageQueue        = "",
        [string] $AddTraefik                = "No",
-       [string] $nchBranch                 = ""
+       [string] $nchBranch                 = "",
+       [string] $BCLocalization            = "W1",
+       [string] $HCSWebServicesURL         = "",
+       [string] $HCSWebServicesUsername    = "",
+       [string] $HCSWebServicesPassword    = ""
 )
 
 $verbosePreference = "SilentlyContinue"
@@ -94,6 +98,8 @@ if ($artifactUrl -ne "" -and $navDockerImage -ne "") {
 $ComputerInfo = Get-ComputerInfo
 $WindowsInstallationType = $ComputerInfo.WindowsInstallationType
 $WindowsProductName = $ComputerInfo.WindowsProductName
+
+AddToStatus "Installation Type: $WindowsInstallationType"
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Ssl3 -bor [System.Net.SecurityProtocolType]::Tls -bor [System.Net.SecurityProtocolType]::Ssl3 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls12
 
@@ -208,9 +214,9 @@ if (!(Get-Module powershellget | Where-Object { $_.Version -ge [version]"2.2.5" 
 
 AddToStatus "Installing Internet Information Server (this might take a few minutes)"
 if ($WindowsInstallationType -eq "Server") {
-    Add-WindowsFeature Web-Server,web-Asp-Net45
+    Add-WindowsFeature Web-Server,web-Asp-Net45,NET-HTTP-Activation,Web-Mgmt-Console,Web-Dyn-Compression,Web-Basic-Auth
 } else {
-    Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServer,IIS-ASPNET45 -All -NoRestart | Out-Null
+    Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServer,IIS-ASPNET45,WCF-HTTP-Activation,IIS-ManagementConsole,IIS-BasicAuthentication,IIS-HttpCompressionDynamic -All -NoRestart | Out-Null
 }
 
 Remove-Item -Path "C:\inetpub\wwwroot\iisstart.*" -Force
@@ -246,6 +252,7 @@ $setupStartScript = "c:\demo\SetupStart.ps1"
 $setupVmScript = "c:\demo\SetupVm.ps1"
 $setupNavContainerScript = "c:\demo\SetupNavContainer.ps1"
 $setupAadScript = "c:\demo\SetupAAD.ps1"
+$setupHybridCloudServer = "c:\demo\SetupHybridCloudServer.ps1"
 
 if ($vmAdminUsername -ne $navAdminUsername) {
     '. "c:\run\SetupWindowsUsers.ps1"
@@ -281,7 +288,7 @@ if ("$requestToken" -ne "" -or "$createStorageQueue" -eq "yes") {
     Download-File -sourceUrl "$($scriptPath)request\ReplaceNavServerContainer.ps1"    -destinationFile "C:\DEMO\request\ReplaceNavServerContainer.ps1"
     Download-File -sourceUrl "$($scriptPath)request\RestartComputer.ps1"              -destinationFile "C:\DEMO\request\RestartComputer.ps1"
 }
-Download-File -sourceUrl "$($scriptPath)Install-VS2017Community.ps1" -destinationFile "C:\DEMO\Install-VS2017Community.ps1"
+Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServer.ps1" -destinationFile $setupHybridCloudServer
 
 if ($beforeContainerSetupScriptUrl) {
     if ($beforeContainerSetupScriptUrl -notlike "https://*" -and $beforeContainerSetupScriptUrl -notlike "http://*") {
