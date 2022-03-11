@@ -70,14 +70,14 @@ AddToStatus "Packages downloaded. You can view all packages on the server: http:
 
 AddToStatus "Updating NewBundlePackage script to include the license package"
 $bundlePackage = Get-Content -Path (Join-Path $HCCProjectDirectory 'NewBundlePackage.ps1')
-$newBundlePackage = $bundlePackage -replace '#@{ Id = "$($Config.PackageIdPrefix)-license"; ''Version'' = "1.0.0" }', '@{ Id = "$($Config.PackageIdPrefix)-license"; ''Version'' = "1.0.0" }'
+$newBundlePackage = $bundlePackage -replace '#@{ Id = "$($Config.PackageIdPrefix)-license"; "Version" = "1.0.0" }', '@{ Id = "$($Config.PackageIdPrefix)-license"; "Version" = "1.0.0" }'
 $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundlePackage.ps1')
 
 # TODO: Include customer extensions
 
 AddToStatus "Updating NewBundlePackage script to include the LS Hardware Station"
 $bundlePackage = Get-Content -Path (Join-Path $HCCProjectDirectory 'NewBundlePackage.ps1')
-$newBundlePackage = $bundlePackage -replace '#@{ Id = ''ls-hardware-station''; Version = $Config.LsCentralVersion }', '@{ Id = ''ls-hardware-station''; Version = $Config.LsCentralVersion }'
+$newBundlePackage = $bundlePackage -replace '#@{ Id = "ls-hardware-station"; Version = $Config.LsCentralVersion }', '@{ Id = "ls-hardware-station"; Version = $Config.LsCentralVersion }'
 $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundlePackage.ps1')
 
 # TODO: Include OPOS drivers (?)

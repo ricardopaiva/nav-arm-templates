@@ -437,8 +437,8 @@
                 },
                 "diagnosticsProfile": {
                     "bootDiagnostics": {
-                        "enabled": "parameters('enableBootDiagnostics')",
-                        "storageUri": "[concat('https://', parameters('storageAccountName'), '.blob.core.windows.net')]"
+                        "enabled": "[parameters('enableBootDiagnostics')]",
+                        "storageUri": "[concat('https://', variables('storageAccountName'), '.blob.core.windows.net')]"
                     }
                 }    
             }
