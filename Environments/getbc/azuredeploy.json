@@ -25,6 +25,13 @@
                 "Description": "Select the name of the deployment"
             }
         },
+        "enableBootDiagnostics": {
+            "type": "bool",
+            "defaultValue": "false",
+            "metadata": {
+                "Description": "Select if boot diagnostics should be enabled"
+            }
+        },
         "TimezoneId": {
             "type": "string",
             "defaultValue": "GMT Standard Time",
@@ -389,6 +396,12 @@
             ],
             "tags": {
                 "Run Schedule": "Business hours - Shutdown - EU"
+            },
+            "diagnosticsProfile": {
+                "bootDiagnostics": {
+                    "enabled": "parameters('enableBootDiagnostics')",
+                    "storageUri": "[concat('https://', parameters('storageAccountName'), '.blob.core.windows.net')]"
+                }
             },
             "properties": {
                 "hardwareProfile": {
