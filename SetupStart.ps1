@@ -65,7 +65,7 @@ elseif ($nchBranch -eq "") {
 }
 
 if (-not (Get-InstalledModule Az -ErrorAction SilentlyContinue)) {
-    AddToStatus "Installing Az module"
+    AddToStatus "Installing Az module (this might take a while)"
     Install-Module Az -Force
 }
 
