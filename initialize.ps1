@@ -52,6 +52,7 @@ param
        [string] $AddTraefik                = "No",
        [string] $nchBranch                 = "",
        [string] $BCLocalization            = "W1",
+       [string] $HCCProjectDirectory       = "",
        [string] $HCSWebServicesURL         = "",
        [string] $HCSWebServicesUsername    = "",
        [string] $HCSWebServicesPassword    = ""
@@ -253,6 +254,7 @@ $setupVmScript = "c:\demo\SetupVm.ps1"
 $setupNavContainerScript = "c:\demo\SetupNavContainer.ps1"
 $setupAadScript = "c:\demo\SetupAAD.ps1"
 $setupHybridCloudServer = "c:\demo\SetupHybridCloudServer.ps1"
+$setupSSMS = "c:\demo\SetupSSMS.ps1"
 
 if ($vmAdminUsername -ne $navAdminUsername) {
     '. "c:\run\SetupWindowsUsers.ps1"
@@ -289,6 +291,7 @@ if ("$requestToken" -ne "" -or "$createStorageQueue" -eq "yes") {
     Download-File -sourceUrl "$($scriptPath)request\RestartComputer.ps1"              -destinationFile "C:\DEMO\request\RestartComputer.ps1"
 }
 Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServer.ps1" -destinationFile $setupHybridCloudServer
+Download-File -sourceUrl "$($scriptPath)SetupSSMS.ps1" -destinationFile $setupSSMS
 
 if ($beforeContainerSetupScriptUrl) {
     if ($beforeContainerSetupScriptUrl -notlike "https://*" -and $beforeContainerSetupScriptUrl -notlike "http://*") {
