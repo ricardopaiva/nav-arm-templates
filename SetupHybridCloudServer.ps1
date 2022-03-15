@@ -56,13 +56,9 @@ if ($licenseFileUri) {
     $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
     Download-File -sourceUrl $licensefileuri -destinationFile $LicenseFileSourcePath
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
-} if ($licenseFile) {
-    $LicenseFileSourcePath = "c:\demo\license.flf"
-    $bytes = [Convert]::FromBase64String($licenseFile)
-    [IO.File]::WriteAllBytes($LicenseFileSourcePath, $bytes)
 }
 else {
-    throw "License file not found at: ${licenseFileUri} or license file not in base 64 format."
+    throw "License file not found at: ${licenseFileUri}"
 }
 
 AddToStatus "Creating license package"

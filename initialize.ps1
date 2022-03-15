@@ -26,7 +26,6 @@ param
        [string] $clickonce                 = "No",
        [string] $enableTaskScheduler       = "Default",
        [string] $licenseFileUri            = "",
-       [string] $licenseFileBase64         = "",       
        [string] $certificatePfxUrl         = "",
        [string] $certificatePfxPassword    = "",
        [string] $publicDnsName             = "",

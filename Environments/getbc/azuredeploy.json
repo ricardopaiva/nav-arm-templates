@@ -2,13 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "LicenseFile": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "Description": "Specify the Business Central license File in Base64 format."
-            }
-        },
         "publicIPAddressName": {
             "type": "string",
             "defaultValue": "",
@@ -332,7 +325,6 @@
         "registryUsername": "[parameters('registryUsername')]",
         "registryPassword": "[parameters('registryPassword')]",
         "LicenseFileUri": "[parameters('LicenseFileUri')]",
-        "LicenseFile": "[parameters('LicenseFile')]",
         "SQLServerType": "SQLExpress",
         "IncludeAppUris": "[parameters('IncludeAppUris')]",
         "CertificatePfxUrl": "[parameters('CertificatePfxUrl')]",
