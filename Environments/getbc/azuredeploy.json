@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "LicenseFile": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "Description": "Specify the Business Central license File in Base64 format."
+            }
+        },
         "publicIPAddressName": {
             "type": "string",
             "defaultValue": "",
@@ -325,6 +332,7 @@
         "registryUsername": "[parameters('registryUsername')]",
         "registryPassword": "[parameters('registryPassword')]",
         "LicenseFileUri": "[parameters('LicenseFileUri')]",
+        "LicenseFile": "[parameters('LicenseFile')]",
         "SQLServerType": "SQLExpress",
         "IncludeAppUris": "[parameters('IncludeAppUris')]",
         "CertificatePfxUrl": "[parameters('CertificatePfxUrl')]",
@@ -461,7 +469,7 @@
                     "fileUris": [
                         "[uri('https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/','initialize.ps1')]"
                     ],
-                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/getbc.json\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -LicenseFileUri \"',variables('licenseFileUri'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -BingMapsKey \"',variables('BingMapsKey'),'\" -RequestToken \"',variables('RequestToken'),'\" -CreateStorageQueue \"',variables('CreateStorageQueue'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -BCLocalization \"',variables('BCLocalization'),'\" -HCCProjectDirectory \"',variables('HCCProjectDirectory'),'\" -HCSWebServicesURL \"',variables('HCSWebServicesURL'),'\" -HCSWebServicesUsername \"',variables('HCSWebServicesUsername'),'\" -HCSWebServicesPassword \"',variables('HCSWebServicesPassword'),'\"  -style \"',variables('style'),'\"')]"
+                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/getbc.json\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -licenseFileUri \"',variables('LicenseFileUri'),'\" -licenseFile \"',variables('LicenseFile'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -BingMapsKey \"',variables('BingMapsKey'),'\" -RequestToken \"',variables('RequestToken'),'\" -CreateStorageQueue \"',variables('CreateStorageQueue'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -BCLocalization \"',variables('BCLocalization'),'\" -HCCProjectDirectory \"',variables('HCCProjectDirectory'),'\" -HCSWebServicesURL \"',variables('HCSWebServicesURL'),'\" -HCSWebServicesUsername \"',variables('HCSWebServicesUsername'),'\" -HCSWebServicesPassword \"',variables('HCSWebServicesPassword'),'\"  -style \"',variables('style'),'\"')]"
                 },
                 "protectedSettings": {}
             }
