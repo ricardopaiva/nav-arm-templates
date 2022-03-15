@@ -62,7 +62,7 @@ else {
 }
 
 AddToStatus "Creating license package"
-& .\NewLicensePackage.ps1 –Import
+& .\NewLicensePackage.ps1 -Import
 
 AddToStatus "Downloading necessary package to the Update Service Server (this might take a while as the packages are downloaded from LS Retail's Update Service server)"
 & .\GetLsCentralPackages.ps1

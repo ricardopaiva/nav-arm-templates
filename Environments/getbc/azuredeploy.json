@@ -65,7 +65,6 @@
             "type": "string",
             "defaultValue": "Standard_D4_v3",
             "allowedValues": [
-                "Standard_A3",
                 "Standard_D2_v2",
                 "Standard_D3_v2",
                 "Standard_D4_v2",
@@ -84,7 +83,7 @@
                 "Standard_D16s_v3"
             ],
             "metadata": {
-                "Description": "Select the VM size of the deployment  // TODO: Remove or add all the A* VMs"
+                "Description": "Select the VM size of the deployment"
             }
         },
         "StorageAccountType": {
