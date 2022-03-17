@@ -18,10 +18,10 @@ if (!(Test-Path $Filename)) {
 AddToStatus "Installing GoCurrent module"
 . "$Filename"
 
-AddToStatus "Preparing SQL Server Express installation (this might take a while)"
+AddToStatus "Installing SQL Server Express (this might take a while)"
 Install-GocPackage -Id 'sql-server-express'
 
-AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
+AddToStatus "Installing SQL Server Studio Management (this might take a while)"
 . "c:\demo\SetupSSMS.ps1"
 
 AddToStatus "Installing LS Data Director Service"
