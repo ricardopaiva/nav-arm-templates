@@ -7,9 +7,6 @@ if (!(Test-Path function:AddToStatus)) {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
-AddToStatus "BCLocalization: " + $BCLocalization
-AddToStatus "3. " + $HCSWebServicesPassword
-
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
 $Filename = "$Folder\InstallGoCurrentClient.ps1"
 New-Item $Folder -itemtype directory -ErrorAction ignore | Out-Null
@@ -41,6 +38,7 @@ AddToStatus "Installing GoCurrent module"
 AddToStatus "Preparing Hybrid Cloud Components project"
 AddToStatus "HCCProjectDirectory: " + $HCCProjectDirectory
 AddToStatus "HCSWebServicesPassword: " + $HCSWebServicesPassword
+AddToStatus $HCSWebServicesUsername
 
 $Project = @{ }
 $Project.Add('ProjectDir', $HCCProjectDirectory)
