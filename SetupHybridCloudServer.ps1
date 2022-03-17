@@ -7,6 +7,7 @@ if (!(Test-Path function:AddToStatus)) {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
+AddToStatus "BCLocalization: " + $BCLocalization
 AddToStatus "3. " + $HCSWebServicesPassword
 
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
@@ -40,17 +41,17 @@ AddToStatus "Installing GoCurrent module"
 AddToStatus "Preparing Hybrid Cloud Components project"
 AddToStatus "HCCProjectDirectory: " + $HCCProjectDirectory
 AddToStatus "HCSWebServicesPassword: " + $HCSWebServicesPassword
-$Arguments = @{
-    'ls-central-hcc-project' = @{
-        ProjectDir = $HCCProjectDirectory
-        CompanyName = 'Cronus'
-        PackageIdPrefix = 'cronus'
-        Localization = $BCLocalization
-        WsUri = $HCSWebServicesURL
-        WsUser = $HCSWebServicesUsername
-        WsPassword = $HCSWebServicesPassword
-    }
-}
+
+$Project = @{ }
+$Project.Add('ProjectDir', $HCCProjectDirectory)
+$Project.Add('CompanyName', 'Cronus')
+$Project.Add('PackageIdPrefix', 'cronus')
+$Project.Add('Localization', $BCLocalization)
+$Project.Add('WsUri', $HCSWebServicesURL)
+$Project.Add('WsUser', $HCSWebServicesUsername)
+$Project.Add('WsPassword', $HCSWebServicesPassword)
+$Arguments = @{ }
+$Arguments.Add('ls-central-hcc-project', $Project)
 Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 AddToStatus "Installing Hybrid Cloud Components"
