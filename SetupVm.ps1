@@ -109,9 +109,9 @@ if (Test-Path -Path "C:\demo\*\BcContainerHelper.psm1") {
     Import-Module -name bccontainerhelper -DisableNameChecking
 }
 
-. (Join-Path $PSScriptRoot "settings.ps1")
-
 . "c:\demo\SetupHybridCloudServer.ps1"
+
+. (Join-Path $PSScriptRoot "settings.ps1")
 
 if ($AddTraefik -eq "Yes") {
 

@@ -5,6 +5,8 @@ if (!(Test-Path function:AddToStatus)) {
     }
 }
 
+. (Join-Path $PSScriptRoot "settings.ps1")
+
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
 $Filename = "$Folder\InstallGoCurrentClient.ps1"
 New-Item $Folder -itemtype directory -ErrorAction ignore | Out-Null
