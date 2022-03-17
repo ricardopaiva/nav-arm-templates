@@ -7,6 +7,8 @@ if (!(Test-Path function:AddToStatus)) {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
+AddToStatus "3. " + $HCSWebServicesPassword
+
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
 $Filename = "$Folder\InstallGoCurrentClient.ps1"
 New-Item $Folder -itemtype directory -ErrorAction ignore | Out-Null
@@ -20,20 +22,20 @@ if (!(Test-Path $Filename)) {
 AddToStatus "Installing GoCurrent module"
 . "$Filename"
 
-AddToStatus "Installing SQL Server Express (this might take a while)"
-Install-GocPackage -Id 'sql-server-express'
+# AddToStatus "Installing SQL Server Express (this might take a while)"
+# Install-GocPackage -Id 'sql-server-express'
 
-AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
-. "c:\demo\SetupSSMS.ps1"
+# AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
+# . "c:\demo\SetupSSMS.ps1"
 
-AddToStatus "Installing LS Data Director Service"
-Install-GocPackage -Id 'ls-dd-service'
+# AddToStatus "Installing LS Data Director Service"
+# Install-GocPackage -Id 'ls-dd-service'
 
-AddToStatus "Installing Update Service Server"
-Install-GocPackage -Id 'go-current-server'
+# AddToStatus "Installing Update Service Server"
+# Install-GocPackage -Id 'go-current-server'
 
-AddToStatus "Installing Update Service Server Management"
-Install-GocPackage -Id 'go-current-server-management'
+# AddToStatus "Installing Update Service Server Management"
+# Install-GocPackage -Id 'go-current-server-management'
 
 AddToStatus "Preparing Hybrid Cloud Components project"
 AddToStatus "HCCProjectDirectory: " + $HCCProjectDirectory
