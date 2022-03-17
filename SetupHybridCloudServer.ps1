@@ -34,6 +34,8 @@ AddToStatus "Installing Update Service Server Management"
 Install-GocPackage -Id 'go-current-server-management'
 
 AddToStatus "Preparing Hybrid Cloud Components project"
+AddToStatus "HCCProjectDirectory: " + $HCCProjectDirectory
+AddToStatus "HCSWebServicesPassword: " + $HCSWebServicesPassword
 $Arguments = @{
     'ls-central-hcc-project' = @{
         ProjectDir = $HCCProjectDirectory
