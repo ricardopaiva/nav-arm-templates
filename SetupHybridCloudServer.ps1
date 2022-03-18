@@ -30,8 +30,9 @@ AddToStatus "Installing LS Data Director Service"
 Install-GocPackage -Id 'ls-dd-service'
 
 # AddToStatus "Enabling Web Services in LS Data Director"
-# $dd_config = Get-Content .\dd_config.xml
-# $dd_config | % { $_.Replace("<WebSrv>false</WebSrv>", "<WebSrv>true</WebSrv>") } | Set-Content .\dd_config.xml
+$ddConfigFilename = "C:\ProgramData\LS Retail\Data Director\lsretail.config"
+$dd_config = Get-Content $ddConfigFilename
+$dd_config | % { $_.Replace("<WebSrv>false</WebSrv>", "<WebSrv>true</WebSrv>") } | Set-Content $ddConfigFilename
 
 # AddToStatus "Installing Update Service Server"
 # Install-GocPackage -Id 'go-current-server'
