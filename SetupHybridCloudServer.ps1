@@ -26,8 +26,12 @@ AddToStatus "Installing GoCurrent module"
 # AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
 # . "c:\demo\SetupSSMS.ps1"
 
-# AddToStatus "Installing LS Data Director Service"
-# Install-GocPackage -Id 'ls-dd-service'
+AddToStatus "Installing LS Data Director Service"
+Install-GocPackage -Id 'ls-dd-service'
+
+# AddToStatus "Enabling Web Services in LS Data Director"
+# $dd_config = Get-Content .\dd_config.xml
+# $dd_config | % { $_.Replace("<WebSrv>false</WebSrv>", "<WebSrv>true</WebSrv>") } | Set-Content .\dd_config.xml
 
 # AddToStatus "Installing Update Service Server"
 # Install-GocPackage -Id 'go-current-server'
