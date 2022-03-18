@@ -111,14 +111,7 @@ if (Test-Path -Path "C:\demo\*\BcContainerHelper.psm1") {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
-AddToStatus "1. AddTraefik: " + $AddTraefik
-AddToStatus "1. HCSWebServicesUsername: " + $HCSWebServicesUsername
-AddToStatus "1. HCSWebServicesPassword: " + $HCSWebServicesPassword
-
 . "c:\demo\SetupHybridCloudServer.ps1"
-
-AddToStatus "2. HCSWebServicesUsername: " + $HCSWebServicesUsername
-AddToStatus "2. HCSWebServicesPassword: " + $HCSWebServicesPassword
 
 if ($AddTraefik -eq "Yes") {
 

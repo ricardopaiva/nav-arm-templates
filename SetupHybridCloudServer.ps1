@@ -36,20 +36,17 @@ AddToStatus "Installing GoCurrent module"
 # Install-GocPackage -Id 'go-current-server-management'
 
 AddToStatus "Preparing Hybrid Cloud Components project"
-AddToStatus "HCCProjectDirectory: " + $HCCProjectDirectory
-AddToStatus "HCSWebServicesPassword: " + $HCSWebServicesPassword
-AddToStatus $HCSWebServicesUsername
-
-$Project = @{ }
-$Project.Add('ProjectDir', $HCCProjectDirectory)
-$Project.Add('CompanyName', 'Cronus')
-$Project.Add('PackageIdPrefix', 'cronus')
-$Project.Add('Localization', $BCLocalization)
-$Project.Add('WsUri', $HCSWebServicesURL)
-$Project.Add('WsUser', $HCSWebServicesUsername)
-$Project.Add('WsPassword', $HCSWebServicesPassword)
-$Arguments = @{ }
-$Arguments.Add('ls-central-hcc-project', $Project)
+$Arguments = @{
+    'ls-central-hcc-project' = @{
+        ProjectDir = $HCCProjectDirectory
+        CompanyName = 'Cronus'
+        PackageIdPrefix = 'cronus'
+        Localization = $BCLocalization
+        WsUri = $HCSWebServicesURL
+        WsUser = $HCSWebServicesUsername
+        WsPassword = $HCSWebServicesPassword
+    }
+}
 Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 AddToStatus "Installing Hybrid Cloud Components"

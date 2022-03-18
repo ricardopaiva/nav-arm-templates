@@ -156,6 +156,7 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "CreateStorageQueue"     | Add-Content $settingsScript
     Get-VariableDeclaration -name "AddTraefik"             | Add-Content $settingsScript
     Get-VariableDeclaration -name "nchBranch"              | Add-Content $settingsScript
+    Get-VariableDeclaration -name "HCCProjectDirectory"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesURL"      | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesUsername" | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesPassword" | Add-Content $settingsScript
