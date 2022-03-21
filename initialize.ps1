@@ -30,7 +30,6 @@ param
        [string] $certificatePfxPassword    = "",
        [string] $publicDnsName             = "",
 	   [string] $fobFileUrl                = "",
-	   [string] $workshopFilesUrl          = "",
 	   [string] $beforeContainerSetupScriptUrl = "",
 	   [string] $finalSetupScriptUrl       = "",
        [string] $style                     = "devpreview",
@@ -43,7 +42,6 @@ param
        [string] $ContactEMailForLetsEncrypt= "",
        [string] $RemoteDesktopAccess       = "*",
        [string] $WinRmAccess               = "-",
-       [string] $BingMapsKey               = "",
        [string] $Office365UserName         = "",
        [string] $Office365Password         = "",
        [string] $Office365CreatePortal     = "No",
@@ -138,7 +136,6 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "enableTaskScheduler"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "licenseFileUri"         | Add-Content $settingsScript
     Get-VariableDeclaration -name "publicDnsName"          | Add-Content $settingsScript
-    Get-VariableDeclaration -name "workshopFilesUrl"       | Add-Content $settingsScript
     Get-VariableDeclaration -name "style"                  | Add-Content $settingsScript
     Get-VariableDeclaration -name "RunWindowsUpdate"       | Add-Content $settingsScript
     Get-VariableDeclaration -name "TestToolkit"            | Add-Content $settingsScript
@@ -151,7 +148,6 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "ContactEMailForLetsEncrypt" | Add-Content $settingsScript
     Get-VariableDeclaration -name "RemoteDesktopAccess"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "WinRmAccess"            | Add-Content $settingsScript
-    Get-VariableDeclaration -name "BingMapsKey"            | Add-Content $settingsScript
     Get-VariableDeclaration -name "RequestToken"           | Add-Content $settingsScript
     Get-VariableDeclaration -name "CreateStorageQueue"     | Add-Content $settingsScript
     Get-VariableDeclaration -name "AddTraefik"             | Add-Content $settingsScript
@@ -317,20 +313,6 @@ if ($finalSetupScriptUrl) {
 if ($fobFileUrl -ne "") {
     Download-File -sourceUrl $fobFileUrl -destinationFile "c:\demo\objects.fob"
 }
-
-if ($workshopFilesUrl -ne "") {
-    if ($workshopFilesUrl -notlike "https://*" -and $workshopFilesUrl -notlike "http://*") {
-        $workshopFilesUrl = "$($scriptPath)$workshopFilesUrl"
-    }
-    $workshopFilesFolder = "c:\WorkshopFiles"
-    $workshopFilesFile = Join-Path $downloadFolder "WorkshopFiles.zip"
-    New-Item -Path $workshopFilesFolder -ItemType Directory -ErrorAction Ignore | Out-Null
-	Download-File -sourceUrl $workshopFilesUrl -destinationFile $workshopFilesFile
-    AddToStatus "Unpacking Workshop Files to $WorkshopFilesFolder"
-	[Reflection.Assembly]::LoadWithPartialName("System.IO.Compression.Filesystem") | Out-Null
-	[System.IO.Compression.ZipFile]::ExtractToDirectory($workshopFilesFile, $workshopFilesFolder)
-}
-
 if ($certificatePfxUrl -ne "" -and $certificatePfxPassword -ne "") {
     Download-File -sourceUrl $certificatePfxUrl -destinationFile "c:\myfolder\certificate.pfx"
 
