@@ -56,6 +56,9 @@ $Arguments = @{
 }
 Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
+# Refresh the PS Module Path otherwise we will get "The specified module 'LsPackageTools\LicensePackageCreator' was not loaded because no valid module file was found in any module directory." when creating the license package.
+$env:PSModulePath = [System.Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')
+
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
 
