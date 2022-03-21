@@ -6,42 +6,6 @@ if (!(Test-Path function:AddToStatus)) {
 }
 
 
-if (!(Test-Path function:Retry-Command)) {
-    function Retry-Command {
-        [CmdletBinding()]
-        Param(
-            [Parameter(Position=0, Mandatory=$true)]
-            [scriptblock]$ScriptBlock,
-
-            [Parameter(Position=1, Mandatory=$false)]
-            [int]$Maximum = 5,
-
-            [Parameter(Position=2, Mandatory=$false)]
-            [int]$Delay = 100
-        )
-
-        Begin {
-            $cnt = 0
-        }
-
-        Process {
-            do {
-                $cnt++
-                try {
-                    $ScriptBlock.Invoke()
-                    return
-                } catch {
-                    Write-Error $_.Exception.InnerException.Message -ErrorAction Continue
-                    Start-Sleep -Milliseconds $Delay
-                }
-            } while ($cnt -lt $Maximum)
-
-            # Throw an error after $Maximum unsuccessful invocations. Doesn't need
-            # a condition, since the function returns upon successful invocation.
-            throw 'Execution failed.'
-        }
-    }
-}
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
@@ -106,10 +70,8 @@ else {
     throw "License file not found at: ${licenseFileUri}"
 }
 
-Retry-Command -ScriptBlock {
-    AddToStatus "Creating license package"
-    & .\NewLicensePackage.ps1 -Import
-} -Maximum 3
+AddToStatus "Creating license package"
+& .\NewLicensePackage.ps1 -Import
 
 AddToStatus "Downloading necessary package to the Update Service Server (this might take a while as the packages are downloaded from LS Retail's Update Service server)"
 & .\GetLsCentralPackages.ps1
