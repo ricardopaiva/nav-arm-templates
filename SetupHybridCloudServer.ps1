@@ -23,8 +23,8 @@ AddToStatus "Installing GoCurrent module"
 AddToStatus "Installing SQL Server Express (this might take a while)"
 Install-GocPackage -Id 'sql-server-express'
 
-AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
-. "c:\demo\SetupSSMS.ps1"
+# AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
+# . "c:\demo\SetupSSMS.ps1"
 
 AddToStatus "Installing LS Data Director Service"
 Install-GocPackage -Id 'ls-dd-service'
