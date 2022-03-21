@@ -5,8 +5,6 @@ if (!(Test-Path function:AddToStatus)) {
     }
 }
 
-
-
 . (Join-Path $PSScriptRoot "settings.ps1")
 
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
@@ -71,6 +69,21 @@ if ($licenseFileUri) {
 }
 else {
     throw "License file not found at: ${licenseFileUri}"
+}
+
+Import-Module GoCurrent
+Import-Module GoCurrentServer
+$ServerAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Server.Management')}
+$ClientAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Client.Management')}
+$ServerVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($ServerAssembly.Location).ProductVersion
+$ClientVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($ClientAssembly.Location).ProductVersion
+AddToStatus "ServerAssembly: $($ServerAssembly)"
+AddToStatus "ClientAssembly: $($ClientAssembly)"
+AddToStatus "ServerVersion: $($ServerVersion)"
+AddToStatus "ClientVersion: $($ClientVersion)"
+if ($ServerVersion -ne $ClientVersion)
+{
+    Write-Warning "Client and server version are not the same ($ServerVersion vs $ClientVersion)"
 }
 
 AddToStatus "Creating license package"
