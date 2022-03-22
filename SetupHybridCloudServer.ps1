@@ -21,7 +21,7 @@ AddToStatus "Installing GoCurrent Client module"
 # . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
 . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES
 if ($LASTEXITCODE -ne 0) { 
-    AddToStatus -color red "Error installing GoCurrent Client module: $LASTEXITCODE"
+    AddToStatus -color red "Error installing GoCurrent Client module: $($LASTEXITCODE)"
     return
 }
 # $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
