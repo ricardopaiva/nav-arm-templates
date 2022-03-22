@@ -18,20 +18,21 @@ if (!(Test-Path $Filename)) {
 }
 
 AddToStatus "Installing GoCurrent Client module"
-. "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+# . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+. "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES
 if ($LASTEXITCODE -ne 0) { 
     AddToStatus -color red "Error installing GoCurrent Client module: $LASTEXITCODE"
     return
 }
-$env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
+# $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 Install-GocPackage -Id 'go-current-client'
-$env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
+# $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
-# AddToStatus "Installing SQL Server Express (this might take a while)"
-# Install-GocPackage -Id 'sql-server-express'
+AddToStatus "Installing SQL Server Express (this might take a while)"
+Install-GocPackage -Id 'sql-server-express'
 
-# AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
-# . "c:\demo\SetupSSMS.ps1"
+AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
+. "c:\demo\SetupSSMS.ps1"
 
 AddToStatus "Installing LS Data Director Service"
 Install-GocPackage -Id 'ls-dd-service'
@@ -46,6 +47,21 @@ Install-GocPackage -Id 'go-current-server'
 
 AddToStatus "Installing Update Service Server Management"
 Install-GocPackage -Id 'go-current-server-management'
+
+Import-Module GoCurrent
+Import-Module GoCurrentServer
+$ServerAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Server.Management')}
+$ClientAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Client.Management')}
+AddToStatus "ServerAssembly: $($ServerAssembly)"
+AddToStatus "ClientAssembly: $($ClientAssembly)"
+# $ServerVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($ServerAssembly.Location).ProductVersion
+# $ClientVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($ClientAssembly.Location).ProductVersion
+# AddToStatus "ServerVersion: $($ServerVersion)"
+# AddToStatus "ClientVersion: $($ClientVersion)"
+# if ($ServerVersion -ne $ClientVersion)
+# {
+#     Write-Warning "Client and server version are not the same ($ServerVersion vs $ClientVersion)"
+# }
 
 AddToStatus "Preparing Hybrid Cloud Components project"
 $Arguments = @{
@@ -66,21 +82,6 @@ Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
-
-# Import-Module GoCurrent
-# Import-Module GoCurrentServer
-$ServerAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Server.Management')}
-$ClientAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Client.Management')}
-AddToStatus "ServerAssembly: $($ServerAssembly)"
-AddToStatus "ClientAssembly: $($ClientAssembly)"
-# $ServerVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($ServerAssembly.Location).ProductVersion
-# $ClientVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($ClientAssembly.Location).ProductVersion
-# AddToStatus "ServerVersion: $($ServerVersion)"
-# AddToStatus "ClientVersion: $($ClientVersion)"
-# if ($ServerVersion -ne $ClientVersion)
-# {
-#     Write-Warning "Client and server version are not the same ($ServerVersion vs $ClientVersion)"
-# }
 
 AddToStatus "Loading the license"
 if ($licenseFileUri) {
