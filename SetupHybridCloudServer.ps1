@@ -27,8 +27,8 @@ $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath",
 Install-GocPackage -Id 'go-current-client'
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
-AddToStatus "Installing SQL Server Express (this might take a while)"
-Install-GocPackage -Id 'sql-server-express'
+# AddToStatus "Installing SQL Server Express (this might take a while)"
+# Install-GocPackage -Id 'sql-server-express'
 
 # AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
 # . "c:\demo\SetupSSMS.ps1"
