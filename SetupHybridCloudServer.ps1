@@ -30,7 +30,7 @@ if ($LASTEXITCODE -ne 0) {
 AddToStatus "2: env:PSModulePath: $($env:PSModulePath)"
 AddToStatus "2: $([System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine"))"
 
-# $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
+$env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 Install-GocPackage -Id 'go-current-client'
 # $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
