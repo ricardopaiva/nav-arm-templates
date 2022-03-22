@@ -8,17 +8,25 @@ if (!(Test-Path function:AddToStatus)) {
 . (Join-Path $PSScriptRoot "settings.ps1")
 
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
-$Filename = "$Folder\InstallGoCurrentClient.ps1"
+$Filename = "$Folder\ls-central-latest.exe"
 New-Item $Folder -itemtype directory -ErrorAction ignore | Out-Null
 
 if (!(Test-Path $Filename)) {
     AddToStatus "Downloading Update Service Client Installer Script"
     $WebClient = New-Object System.Net.WebClient
-    $WebClient.DownloadFile("http://gc.lsretail.com:16551/ManagementFile/install", $Filename)
+    $WebClient.DownloadFile("https://portal.lsretail.com/media/uiucpd5g/ls-central-latest.exe", $Filename)
 }
 
-AddToStatus "Installing GoCurrent module"
-. "$Filename"
+AddToStatus "Installing GoCurrent Client module"
+. "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+& 'c:\path\to\installer.exe' /VERYSILENT /NORESTART /SUPPRESSMSGBOXES
+if ($LASTEXITCODE -ne 0) { 
+    AddToStatus -color red "Error installing GoCurrent Client module: $LASTEXITCODE"
+    return
+}
+$env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
+Install-GocPackage -Id 'go-current-client'
+$env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
 AddToStatus "Installing SQL Server Express (this might take a while)"
 Install-GocPackage -Id 'sql-server-express'
@@ -55,21 +63,10 @@ $Arguments = @{
 Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 # Refresh the PS Module Path otherwise we will get "The specified module 'LsPackageTools\LicensePackageCreator' was not loaded because no valid module file was found in any module directory." when creating the license package.
-$env:PSModulePath = [System.Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')
+# $env:PSModulePath = [System.Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')
 
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
-
-AddToStatus "Loading the license"
-if ($licenseFileUri) {
-    $LicenseFileSourcePath = "c:\demo\license.flf"
-    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
-    Download-File -sourceUrl $licensefileuri -destinationFile $LicenseFileSourcePath
-    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
-}
-else {
-    throw "License file not found at: ${licenseFileUri}"
-}
 
 Import-Module GoCurrent
 Import-Module GoCurrentServer
@@ -84,6 +81,17 @@ AddToStatus "ClientVersion: $($ClientVersion)"
 if ($ServerVersion -ne $ClientVersion)
 {
     Write-Warning "Client and server version are not the same ($ServerVersion vs $ClientVersion)"
+}
+
+AddToStatus "Loading the license"
+if ($licenseFileUri) {
+    $LicenseFileSourcePath = "c:\demo\license.flf"
+    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+    Download-File -sourceUrl $licensefileuri -destinationFile $LicenseFileSourcePath
+    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+}
+else {
+    throw "License file not found at: ${licenseFileUri}"
 }
 
 AddToStatus "Creating license package"
