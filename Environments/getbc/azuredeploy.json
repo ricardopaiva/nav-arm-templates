@@ -386,7 +386,7 @@
                 "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
             ],
             "tags": {
-                "Run Schedule": "Business hours - Shutdown - EU"
+                "Run Schedule": "Midnight - Shutdown - EU"
             },
             "properties": {
                 "hardwareProfile": {
