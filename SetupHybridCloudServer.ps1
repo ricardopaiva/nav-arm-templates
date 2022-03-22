@@ -19,7 +19,6 @@ if (!(Test-Path $Filename)) {
 
 AddToStatus "Installing GoCurrent Client module"
 . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
-# & 'c:\path\to\installer.exe' /VERYSILENT /NORESTART /SUPPRESSMSGBOXES
 if ($LASTEXITCODE -ne 0) { 
     AddToStatus -color red "Error installing GoCurrent Client module: $LASTEXITCODE"
     return
@@ -68,8 +67,8 @@ Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
 
-Import-Module GoCurrent
-Import-Module GoCurrentServer
+# Import-Module GoCurrent
+# Import-Module GoCurrentServer
 $ServerAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Server.Management')}
 $ClientAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Client.Management')}
 $ServerVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($ServerAssembly.Location).ProductVersion
