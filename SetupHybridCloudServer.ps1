@@ -19,7 +19,7 @@ if (!(Test-Path $Filename)) {
 
 AddToStatus "Installing GoCurrent Client module"
 . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
-& 'c:\path\to\installer.exe' /VERYSILENT /NORESTART /SUPPRESSMSGBOXES
+# & 'c:\path\to\installer.exe' /VERYSILENT /NORESTART /SUPPRESSMSGBOXES
 if ($LASTEXITCODE -ne 0) { 
     AddToStatus -color red "Error installing GoCurrent Client module: $LASTEXITCODE"
     return
