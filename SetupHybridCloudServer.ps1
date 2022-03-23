@@ -5,6 +5,8 @@ if (!(Test-Path function:AddToStatus)) {
     }
 }
 
+AddToStatus "Who am i: $(whoami)"
+
 AddToStatus "1: $([System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine"))"
 
 . (Join-Path $PSScriptRoot "settings.ps1")
@@ -147,6 +149,10 @@ else {
 # else {
 #     throw "License file not found at: ${licenseFileUri}"
 # }
+
+AddToStatus "7: env:PSModulePath: $($env:PSModulePath)"
+AddToStatus "7: $([System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine"))"
+$env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
 AddToStatus "Creating license package"
 & .\NewLicensePackage.ps1 -Import
