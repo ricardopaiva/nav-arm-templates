@@ -114,17 +114,23 @@ if ($licenseFileUri) {
 }
 else {
     # Install-Module Az.Storage -Force
+    AddToStatus "1"
     Import-Module Az.Storage
-    
+
+    AddToStatus "2"
     $storageAccountName = 'storagerlkhmkieze3cg'
     $containerName = 'hcs-container'
     $licenseFileName = 'DEV.flf'
     
-    $sasToken = '?sv=2020-08-04&ss=b&srt=o&se=2022-03-23T15%3A56%3A46Z&sp=rl&sig=C28ZO%2BwJjvch4X914weA8QByhlLttOXFZ3lMCov22zg%3D'
+    AddToStatus "3"
+    $sasToken = '?sv=2020-08-04&ss=b&srt=o&se=2022-03-24T16%3A42%3A39Z&sp=rl&sig=fENFcm8hXng%2BJUF1QcCnWgzhOL6f%2FtqehEsEHF6ELmY%3D'
+    AddToStatus "4"
     $storageAccountContext = New-AzStorageContext $storageAccountName -SasToken $sasToken
-    
+    AddToStatus "5"
+
     $LicenseFileSourcePath = "c:\demo\license.flf"
     $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+    AddToStatus "6"
 
     $DownloadBCLicenseFileHT = @{
         Blob        = $licenseFileName
@@ -132,8 +138,11 @@ else {
         Destination = $LicenseFileSourcePath
         Context     = $storageAccountContext
     }
+    AddToStatus "7"
     Get-AzStorageBlobContent @DownloadBCLicenseFileHT
+    AddToStatus "8"
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+    AddToStatus "9"
 }
 # else {
 #     throw "License file not found at: ${licenseFileUri}"
