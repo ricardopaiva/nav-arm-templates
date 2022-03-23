@@ -68,6 +68,10 @@ elseif ($nchBranch -eq "") {
 #     AddToStatus "Installing Az module (this might take a while)"
 #     Install-Module Az -Force
 # }
+if (-not (Get-InstalledModule Az.Storage -ErrorAction SilentlyContinue)) {
+    AddToStatus "Installing Az.Storage module (this might take a while)"
+    Install-Module Az.Storage -Force
+}
 
 if (-not (Get-InstalledModule AzureAD -ErrorAction SilentlyContinue)) {
     AddToStatus "Installing AzureAD module"

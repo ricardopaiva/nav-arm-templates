@@ -37,8 +37,8 @@ Install-GocPackage -Id 'go-current-client'
 AddToStatus "3: env:PSModulePath: $($env:PSModulePath)"
 AddToStatus "3: $([System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine"))"
 
-AddToStatus "Installing SQL Server Express (this might take a while)"
-Install-GocPackage -Id 'sql-server-express'
+# AddToStatus "Installing SQL Server Express (this might take a while)"
+# Install-GocPackage -Id 'sql-server-express'
 
 # AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
 # . "c:\demo\SetupSSMS.ps1"
@@ -113,8 +113,31 @@ if ($licenseFileUri) {
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
 else {
-    throw "License file not found at: ${licenseFileUri}"
+    Install-Module Az.Storage -Force
+    Import-Module Az.Storage
+    
+    $storageAccountName = 'storagerlkhmkieze3cg'
+    $containerName = 'hcs-container'
+    $licenseFileName = 'DEV.flf'
+    
+    $sasToken = '?sv=2020-08-04&ss=b&srt=o&se=2022-03-23T15%3A56%3A46Z&sp=rl&sig=C28ZO%2BwJjvch4X914weA8QByhlLttOXFZ3lMCov22zg%3D'
+    $storageAccountContext = New-AzStorageContext $storageAccountName -SasToken $sasToken
+    
+    $LicenseFileSourcePath = "c:\demo\license.flf"
+    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+
+    $DownloadBCLicenseFileHT = @{
+        Blob        = $licenseFileName
+        Container   = $containerName
+        Destination = $LicenseFileSourcePath
+        Context     = $storageAccountContext
+    }
+    Get-AzStorageBlobContent @DownloadBCLicenseFileHT
+    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
+# else {
+#     throw "License file not found at: ${licenseFileUri}"
+# }
 
 AddToStatus "Creating license package"
 & .\NewLicensePackage.ps1 -Import
