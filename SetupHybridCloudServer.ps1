@@ -113,7 +113,7 @@ if ($licenseFileUri) {
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
 else {
-    Install-Module Az.Storage -Force
+    # Install-Module Az.Storage -Force
     Import-Module Az.Storage
     
     $storageAccountName = 'storagerlkhmkieze3cg'
