@@ -74,11 +74,11 @@ $Arguments = @{
         WsPassword = $HCSWebServicesPassword
     }
 }
-Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
-
 $ProjectJson = Get-Content -Path (Join-Path $HCCProjectDirectory 'Project.json') | ConvertFrom-Json
 $ProjectJson.WsPassword = $HCSWebServicesPassword
 ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Project.json')
+
+Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
