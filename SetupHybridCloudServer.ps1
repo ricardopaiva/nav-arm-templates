@@ -94,9 +94,7 @@ else {
     Import-Module Az.Storage
 
     $licenseFileName = 'DEV.flf'
-    
-    $sasToken = '?sv=2020-08-04&ss=b&srt=o&se=2022-03-24T16%3A42%3A39Z&sp=rl&sig=fENFcm8hXng%2BJUF1QcCnWgzhOL6f%2FtqehEsEHF6ELmY%3D'
-    $storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $sasToken
+    $storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
 
     $LicenseFileSourcePath = "c:\demo\license.flf"
     $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
