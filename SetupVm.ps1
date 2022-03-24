@@ -383,8 +383,6 @@ if (Test-Path $beforeContainerSetupScript) {
     . $beforeContainerSetupScript
 }
 
-# . "c:\demo\SetupDesktop.ps1"
-
 $finalSetupScript = (Join-Path $PSScriptRoot "FinalSetupScript.ps1")
 if (Test-Path $finalSetupScript) {
     AddToStatus "Running FinalSetupScript"

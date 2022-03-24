@@ -247,11 +247,8 @@ if ($WindowsInstallationType -eq "Server") {
     Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}" -Name "IsInstalled" -Value 0 -ErrorAction SilentlyContinue | Out-Null
 }
 
-$setupDesktopScript = "c:\demo\SetupDesktop.ps1"
 $setupStartScript = "c:\demo\SetupStart.ps1"
 $setupVmScript = "c:\demo\SetupVm.ps1"
-$setupNavContainerScript = "c:\demo\SetupNavContainer.ps1"
-$setupAadScript = "c:\demo\SetupAAD.ps1"
 $setupHybridCloudServer = "c:\demo\SetupHybridCloudServer.ps1"
 $setupSSMS = "c:\demo\SetupSSMS.ps1"
 
@@ -268,10 +265,6 @@ Add-LocalGroupMember -Group administrators -Member $hostUsername -ErrorAction Ig
 ' | Set-Content "c:\myfolder\SetupWindowsUsers.ps1"
 }
 
-Download-File -sourceUrl "$($scriptPath)SetupWebClient.ps1"    -destinationFile "c:\myfolder\SetupWebClient.ps1"
-
-Download-File -sourceUrl "$($scriptPath)SetupDesktop.ps1"      -destinationFile $setupDesktopScript
-Download-File -sourceUrl "$($scriptPath)SetupNavContainer.ps1" -destinationFile $setupNavContainerScript
 Download-File -sourceUrl "$($scriptPath)SetupVm.ps1"           -destinationFile $setupVmScript
 Download-File -sourceUrl "$($scriptPath)SetupStart.ps1"        -destinationFile $setupStartScript
 Download-File -sourceUrl "$($scriptPath)RestartContainers.ps1" -destinationFile "c:\demo\restartContainers.ps1"
