@@ -63,6 +63,7 @@ if ($ServerVersion -ne $ClientVersion)
 }
 
 AddToStatus "Preparing Hybrid Cloud Components project"
+AddToStatus "Password: $($HCSWebServicesPassword)"
 $Arguments = @{
     'ls-central-hcc-project' = @{
         ProjectDir = $HCCProjectDirectory
@@ -74,6 +75,7 @@ $Arguments = @{
         WsPassword = $HCSWebServicesPassword
     }
 }
+AddToStatus "Arguments: $($Arguments)"
 Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 AddToStatus "Installing Hybrid Cloud Components"
