@@ -334,30 +334,30 @@ if ($style -eq "devpreview") {
     New-DesktopShortcut -Name "Modern Dev Tools" -TargetPath "C:\Program Files\Internet Explorer\iexplore.exe" -Shortcuts "CommonStartup" -Arguments "http://aka.ms/moderndevtools"
 }
 
-if ($artifactUrl -ne "") {
-    $imageName = Get-BestGenericImageName
-    AddToStatus "Pulling $imageName (this might take some time)"
-    if (!(DockerDo -imageName $imageName -command pull))  {
-        throw "Error pulling image"
-    }
-}
-else {
-    $imageName = ""
-    $navDockerImage.Split(',') | Where-Object { $_ } | ForEach-Object {
-        $registry = $_.Split('/')[0]
-        if (($registry -ne "microsoft") -and ($registryUsername -ne "") -and ($registryPassword -ne "")) {
-            AddToStatus "Logging in to $registry"
-            docker login "$registry" -u "$registryUsername" -p "$registryPassword"
-        }
+# if ($artifactUrl -ne "") {
+#     $imageName = Get-BestGenericImageName
+#     AddToStatus "Pulling $imageName (this might take some time)"
+#     if (!(DockerDo -imageName $imageName -command pull))  {
+#         throw "Error pulling image"
+#     }
+# }
+# else {
+#     $imageName = ""
+#     $navDockerImage.Split(',') | Where-Object { $_ } | ForEach-Object {
+#         $registry = $_.Split('/')[0]
+#         if (($registry -ne "microsoft") -and ($registryUsername -ne "") -and ($registryPassword -ne "")) {
+#             AddToStatus "Logging in to $registry"
+#             docker login "$registry" -u "$registryUsername" -p "$registryPassword"
+#         }
     
-        $imageName = Get-BestNavContainerImageName -imageName $_
+#         $imageName = Get-BestNavContainerImageName -imageName $_
     
-        AddToStatus "Pulling $imageName (this might take ~30 minutes)"
-        if (!(DockerDo -imageName $imageName -command pull))  {
-            throw "Error pulling image"
-        }
-    }
-}
+#         AddToStatus "Pulling $imageName (this might take ~30 minutes)"
+#         if (!(DockerDo -imageName $imageName -command pull))  {
+#             throw "Error pulling image"
+#         }
+#     }
+# }
 
 AddToStatus "Installing Visual C++ Redist"
 $vcRedistUrl = "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe"
@@ -377,20 +377,20 @@ $openXmlFile = "C:\DOWNLOAD\OpenXMLSDKV25.msi"
 Download-File -sourceUrl $openXmlUrl -destinationFile $openXmlFile
 Start-Process $openXmlFile -argumentList "/qn /q /passive" -wait
 
-$beforeContainerSetupScript = (Join-Path $PSScriptRoot "BeforeContainerSetupScript.ps1")
-if (Test-Path $beforeContainerSetupScript) {
-    AddToStatus "Running beforeContainerSetupScript"
-    . $beforeContainerSetupScript
-}
+# $beforeContainerSetupScript = (Join-Path $PSScriptRoot "BeforeContainerSetupScript.ps1")
+# if (Test-Path $beforeContainerSetupScript) {
+#     AddToStatus "Running beforeContainerSetupScript"
+#     . $beforeContainerSetupScript
+# }
 
-. "c:\demo\SetupNavContainer.ps1"
-. "c:\demo\SetupDesktop.ps1"
+# . "c:\demo\SetupNavContainer.ps1"
+# . "c:\demo\SetupDesktop.ps1"
 
-$finalSetupScript = (Join-Path $PSScriptRoot "FinalSetupScript.ps1")
-if (Test-Path $finalSetupScript) {
-    AddToStatus "Running FinalSetupScript"
-    . $finalSetupScript
-}
+# $finalSetupScript = (Join-Path $PSScriptRoot "FinalSetupScript.ps1")
+# if (Test-Path $finalSetupScript) {
+#     AddToStatus "Running FinalSetupScript"
+#     . $finalSetupScript
+# }
 
 if (Get-ScheduledTask -TaskName SetupStart -ErrorAction Ignore) {
     schtasks /DELETE /TN SetupStart /F | Out-Null
@@ -407,9 +407,9 @@ if ($RunWindowsUpdate -eq "Yes") {
     AddToStatus "Windows updates installed"
 }
 
-if (!($imageName)) {
-    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
-}
+# if (!($imageName)) {
+#     Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
+# }
 
 shutdown -r -t 30
 
