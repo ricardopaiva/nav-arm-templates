@@ -50,9 +50,7 @@ param
        [string] $HCCProjectDirectory       = "",
        [string] $HCSWebServicesURL         = "",
        [string] $HCSWebServicesUsername    = "",
-       [string] $HCSWebServicesPassword    = "",
-       [string] $StorageContainerName      = "",
-       [string] $StorageSasToken           = ""
+       [string] $HCSWebServicesPassword    = ""
 )
 
 $verbosePreference = "SilentlyContinue"
