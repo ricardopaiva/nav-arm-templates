@@ -74,11 +74,11 @@ $Arguments = @{
         WsPassword = $HCSWebServicesPassword
     }
 }
+Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
+
 $ProjectJson = Get-Content -Path (Join-Path $HCCProjectDirectory 'Project.json') | ConvertFrom-Json
 $ProjectJson.WsPassword = $HCSWebServicesPassword
 ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Project.json')
-
-Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
@@ -93,19 +93,17 @@ if ($licenseFileUri) {
 else {
     Import-Module Az.Storage
 
-    $storageAccountName = 'storagerlkhmkieze3cg'
-    $containerName = 'hcs-container'
     $licenseFileName = 'DEV.flf'
     
     $sasToken = '?sv=2020-08-04&ss=b&srt=o&se=2022-03-24T16%3A42%3A39Z&sp=rl&sig=fENFcm8hXng%2BJUF1QcCnWgzhOL6f%2FtqehEsEHF6ELmY%3D'
-    $storageAccountContext = New-AzStorageContext $storageAccountName -SasToken $sasToken
+    $storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $sasToken
 
     $LicenseFileSourcePath = "c:\demo\license.flf"
     $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
 
     $DownloadBCLicenseFileHT = @{
         Blob        = $licenseFileName
-        Container   = $containerName
+        Container   = $StorageContainerName
         Destination = $LicenseFileSourcePath
         Context     = $storageAccountContext
     }

@@ -86,39 +86,6 @@ if (-not (Get-InstalledModule SqlServer -ErrorAction SilentlyContinue)) {
 $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
 $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
 
-if ($requestToken) {
-    if (!(Get-ScheduledTask -TaskName request -ErrorAction Ignore)) {
-        AddToStatus "Registering request task"
-        $xml = [System.IO.File]::ReadAllText("c:\demo\RequestTaskDef.xml")
-        Register-ScheduledTask -TaskName request -User $vmadminUsername -Password $plainPassword -Xml $xml
-    }
-}
-
-if ("$createStorageQueue" -eq "yes") {
-    if (-not (Get-InstalledModule AzTable -ErrorAction SilentlyContinue)) {
-        AddToStatus "Installing AzTable Module"
-        Install-Module AzTable -Force
-    
-        $taskName = "RunQueue"
-        $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File c:\demo\RunQueue.ps1"
-        $startupTrigger = New-ScheduledTaskTrigger -AtStartup
-        $startupTrigger.Delay = "PT5M"
-        $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-        $task = Register-ScheduledTask -TaskName $taskName `
-                               -Action $startupAction `
-                               -Trigger $startupTrigger `
-                               -Settings $settings `
-                               -RunLevel Highest `
-                               -User $vmAdminUsername `
-                               -Password $plainPassword
-        
-        $task.Triggers.Repetition.Interval = "PT5M"
-        $task | Set-ScheduledTask -User $vmAdminUsername -Password $plainPassword | Out-Null
-    
-        Start-ScheduledTask -TaskName $taskName
-    }
-}
-
 $taskName = "RestartContainers"
 if (-not (Get-ScheduledTask -TaskName $taskName -ErrorAction Ignore)) {
     AddToStatus "Register RestartContainers Task to start container delayed"

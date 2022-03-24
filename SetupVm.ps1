@@ -377,20 +377,19 @@ $openXmlFile = "C:\DOWNLOAD\OpenXMLSDKV25.msi"
 Download-File -sourceUrl $openXmlUrl -destinationFile $openXmlFile
 Start-Process $openXmlFile -argumentList "/qn /q /passive" -wait
 
-# $beforeContainerSetupScript = (Join-Path $PSScriptRoot "BeforeContainerSetupScript.ps1")
-# if (Test-Path $beforeContainerSetupScript) {
-#     AddToStatus "Running beforeContainerSetupScript"
-#     . $beforeContainerSetupScript
-# }
+$beforeContainerSetupScript = (Join-Path $PSScriptRoot "BeforeContainerSetupScript.ps1")
+if (Test-Path $beforeContainerSetupScript) {
+    AddToStatus "Running beforeContainerSetupScript"
+    . $beforeContainerSetupScript
+}
 
-# . "c:\demo\SetupNavContainer.ps1"
 # . "c:\demo\SetupDesktop.ps1"
 
-# $finalSetupScript = (Join-Path $PSScriptRoot "FinalSetupScript.ps1")
-# if (Test-Path $finalSetupScript) {
-#     AddToStatus "Running FinalSetupScript"
-#     . $finalSetupScript
-# }
+$finalSetupScript = (Join-Path $PSScriptRoot "FinalSetupScript.ps1")
+if (Test-Path $finalSetupScript) {
+    AddToStatus "Running FinalSetupScript"
+    . $finalSetupScript
+}
 
 if (Get-ScheduledTask -TaskName SetupStart -ErrorAction Ignore) {
     schtasks /DELETE /TN SetupStart /F | Out-Null

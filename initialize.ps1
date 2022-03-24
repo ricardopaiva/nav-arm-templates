@@ -29,7 +29,6 @@ param
        [string] $certificatePfxUrl         = "",
        [string] $certificatePfxPassword    = "",
        [string] $publicDnsName             = "",
-	   [string] $fobFileUrl                = "",
 	   [string] $beforeContainerSetupScriptUrl = "",
 	   [string] $finalSetupScriptUrl       = "",
        [string] $style                     = "devpreview",
@@ -45,15 +44,15 @@ param
        [string] $Office365UserName         = "",
        [string] $Office365Password         = "",
        [string] $Office365CreatePortal     = "No",
-       [string] $requestToken              = "",
-       [string] $createStorageQueue        = "",
        [string] $AddTraefik                = "No",
        [string] $nchBranch                 = "",
        [string] $BCLocalization            = "W1",
        [string] $HCCProjectDirectory       = "",
        [string] $HCSWebServicesURL         = "",
        [string] $HCSWebServicesUsername    = "",
-       [string] $HCSWebServicesPassword    = ""
+       [string] $HCSWebServicesPassword    = "".
+       [string] $StorageContainerName      = "",
+       [string] $StorageSasToken           = ""
 )
 
 $verbosePreference = "SilentlyContinue"
@@ -148,8 +147,6 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "ContactEMailForLetsEncrypt" | Add-Content $settingsScript
     Get-VariableDeclaration -name "RemoteDesktopAccess"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "WinRmAccess"            | Add-Content $settingsScript
-    Get-VariableDeclaration -name "RequestToken"           | Add-Content $settingsScript
-    Get-VariableDeclaration -name "CreateStorageQueue"     | Add-Content $settingsScript
     Get-VariableDeclaration -name "AddTraefik"             | Add-Content $settingsScript
     Get-VariableDeclaration -name "nchBranch"              | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCCProjectDirectory"    | Add-Content $settingsScript
@@ -157,6 +154,9 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "HCSWebServicesUsername" | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesPassword" | Add-Content $settingsScript
     Get-VariableDeclaration -name "BCLocalization"         | Add-Content $settingsScript
+    Get-VariableDeclaration -name "StorageAccountName"     | Add-Content $settingsScript
+    Get-VariableDeclaration -name "StorageContainerName"   | Add-Content $settingsScript
+    Get-VariableDeclaration -name "StorageSasToken"        | Add-Content $settingsScript
 
     $passwordKey = New-Object Byte[] 16
     [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($passwordKey)
@@ -227,9 +227,6 @@ Download-File -sourceUrl "$($scriptPath)status.aspx"             -destinationFil
 Download-File -sourceUrl "$($scriptPath)line.png"                -destinationFile "C:\inetpub\wwwroot\line.png"
 Download-File -sourceUrl "$($scriptPath)Microsoft.png"           -destinationFile "C:\inetpub\wwwroot\Microsoft.png"
 Download-File -sourceUrl "$($scriptPath)web.config"              -destinationFile "C:\inetpub\wwwroot\web.config"
-if ($requestToken) {
-    Download-File -sourceUrl "$($scriptPath)request.aspx"            -destinationFile "C:\inetpub\wwwroot\request.aspx"
-}
 
 $title = 'Dynamics Container Host'
 [System.IO.File]::WriteAllText("C:\inetpub\wwwroot\title.txt", $title)
@@ -277,20 +274,6 @@ Download-File -sourceUrl "$($scriptPath)SetupNavContainer.ps1" -destinationFile 
 Download-File -sourceUrl "$($scriptPath)SetupVm.ps1"           -destinationFile $setupVmScript
 Download-File -sourceUrl "$($scriptPath)SetupStart.ps1"        -destinationFile $setupStartScript
 Download-File -sourceUrl "$($scriptPath)RestartContainers.ps1" -destinationFile "c:\demo\restartContainers.ps1"
-if ($requestToken) {
-    Download-File -sourceUrl "$($scriptPath)Request.ps1"           -destinationFile "C:\DEMO\Request.ps1"
-    Download-File -sourceUrl "$($scriptPath)RequestTaskDef.xml"    -destinationFile "C:\DEMO\RequestTaskDef.xml"
-}
-if ("$createStorageQueue" -eq "yes") {
-    Download-File -sourceUrl "$($scriptPath)RunQueue.ps1"          -destinationFile "C:\DEMO\RunQueue.ps1"
-}
-if ("$requestToken" -ne "" -or "$createStorageQueue" -eq "yes") {
-    # Request commands
-    New-Item -Path "C:\DEMO\request" -ItemType Directory | Out-Null
-    Download-File -sourceUrl "$($scriptPath)request\Demo.ps1"                         -destinationFile "C:\DEMO\request\Demo.ps1"
-    Download-File -sourceUrl "$($scriptPath)request\ReplaceNavServerContainer.ps1"    -destinationFile "C:\DEMO\request\ReplaceNavServerContainer.ps1"
-    Download-File -sourceUrl "$($scriptPath)request\RestartComputer.ps1"              -destinationFile "C:\DEMO\request\RestartComputer.ps1"
-}
 Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServer.ps1" -destinationFile $setupHybridCloudServer
 Download-File -sourceUrl "$($scriptPath)SetupSSMS.ps1" -destinationFile $setupSSMS
 
@@ -310,9 +293,6 @@ if ($finalSetupScriptUrl) {
     Download-File -sourceUrl $finalSetupScriptUrl -destinationFile $finalSetupScript
 }
 
-if ($fobFileUrl -ne "") {
-    Download-File -sourceUrl $fobFileUrl -destinationFile "c:\demo\objects.fob"
-}
 if ($certificatePfxUrl -ne "" -and $certificatePfxPassword -ne "") {
     Download-File -sourceUrl $certificatePfxUrl -destinationFile "c:\myfolder\certificate.pfx"
 

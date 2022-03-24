@@ -97,6 +97,20 @@
                 "Description": "Select the preferred storage account type. Standard_LRS is HDD, Premium_LRS is SSD."
             }
         },
+        "StorageContainerName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "Description": "Specify the name for the container in Azure Blob service to retrieve the BC license."
+            }
+        },
+        "StorageSasToken": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "Description": "Specify the Sas Token to access the container in Azure Blob service."
+            }
+        },
         "vmAdminUsername": {
             "type": "string",
             "defaultValue": "vmadmin",
@@ -238,21 +252,6 @@
                 "Description": "Optional: Specify a Url to a PowerShell script that should be executed on the VM to do the final setup of the VM."
             }
         },
-        "RequestToken": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "Description": "Request Token for http request service allowing predefined commands to be invoked through a simple http request"
-            }
-        },
-        "CreateStorageQueue": {
-            "type": "string",
-            "defaultValue": "No",
-            "allowedValues": ["Yes", "No"],
-            "metadata": {
-                "Description": "Create storage queue and listen to messages in the queue for predefined commands to be invoked"
-            }
-        },
         "RunWindowsUpdate": {
             "type": "string",
             "defaultValue": "No",
@@ -332,8 +331,6 @@
         "EnableTaskScheduler": "[parameters('EnableTaskScheduler')]",
         "Office365UserName": "[parameters('Office365UserName')]",
         "Office365Password": "[parameters('Office365Password')]",
-        "RequestToken": "[parameters('RequestToken')]",
-        "CreateStorageQueue": "[parameters('CreateStorageQueue')]",
         "FinalSetupScriptUrl": "[parameters('FinalSetupScriptUrl')]",
         "RunWindowsUpdate": "[parameters('RunWindowsUpdate')]",
         "ContactEMailForLetsEncrypt": "[parameters('ContactEMailForLetsEncrypt')]",
@@ -363,7 +360,9 @@
         "HCCProjectDirectory": "[parameters('HCCProjectDirectory')]",
         "HCSWebServicesURL": "[parameters('HCSWebServicesURL')]",
         "HCSWebServicesUsername": "[parameters('HCSWebServicesUsername')]",
-        "HCSWebServicesPassword": "[parameters('HCSWebServicesPassword')]"
+        "HCSWebServicesPassword": "[parameters('HCSWebServicesPassword')]",
+        "StorageContainerName": "[parameters('StorageContainerName')]",
+        "StorageSasToken": "[parameters('StorageSasToken')]"
     },
     "resources": [{
             "apiVersion": "2019-04-01",
@@ -453,7 +452,7 @@
                     "fileUris": [
                         "[uri('https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/','initialize.ps1')]"
                     ],
-                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/getbc.json\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -licenseFileUri \"',variables('LicenseFileUri'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -RequestToken \"',variables('RequestToken'),'\" -CreateStorageQueue \"',variables('CreateStorageQueue'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -BCLocalization \"',variables('BCLocalization'),'\" -HCCProjectDirectory \"',variables('HCCProjectDirectory'),'\" -HCSWebServicesURL \"',variables('HCSWebServicesURL'),'\" -HCSWebServicesUsername \"',variables('HCSWebServicesUsername'),'\" -HCSWebServicesPassword \"',variables('HCSWebServicesPassword'),'\"  -style \"',variables('style'),'\"')]"
+                    "commandToExecute": "[concat(variables('ScriptCommandToExecute'),'initialize.ps1',' -TemplateLink \"https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/getbc.json\" -storageConnectionString \"',Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value),'\" -RemoteDesktopAccess \"',variables('RemoteDesktopAccess'),'\" -VMAdminUsername \"',variables('vmAdminUsername'),'\" -NAVAdminUsername \"',variables('navAdminUsername'),'\" -AdminPassword \"',variables('adminPassword'),'\" -navDockerImage \"',variables('navDockerImage'),'\" -registryUsername \"',variables('registryUsername'),'\" -registryPassword \"',variables('registryPassword'),'\" -licenseFileUri \"',variables('LicenseFileUri'),'\" -SQLServerType \"',variables('SQLServerType'),'\" -IncludeAppUris \"',variables('IncludeAppUris'),'\" -CertificatePfxUrl \"',variables('CertificatePfxUrl'),'\" -CertificatePfxPassword \"',variables('CertificatePfxPassword'),'\" -PublicDnsName \"',variables('PublicDnsName'),'\" -Multitenant \"',variables('Multitenant'),'\" -AssignPremiumPlan \"',variables('AssignPremiumPlan'),'\" -CreateTestUsers \"',variables('CreateTestUsers'),'\" -CreateAadUsers \"',variables('CreateAadUsers'),'\" -EnableSymbolLoading \"',variables('EnableSymbolLoading'),'\" -ClickOnce \"',variables('ClickOnce'),'\" -EnableTaskScheduler \"',variables('EnableTaskScheduler'),'\" -Office365UserName \"',variables('Office365UserName'),'\" -Office365Password \"',variables('Office365Password'),'\" -finalSetupScriptUrl \"',variables('finalSetupScriptUrl'),'\" -RunWindowsUpdate \"',variables('RunWindowsUpdate'),'\" -ContactEMailForLetsEncrypt \"',variables('ContactEMailForLetsEncrypt'),'\" -BCLocalization \"',variables('BCLocalization'),'\" -HCCProjectDirectory \"',variables('HCCProjectDirectory'),'\" -HCSWebServicesURL \"',variables('HCSWebServicesURL'),'\" -HCSWebServicesUsername \"',variables('HCSWebServicesUsername'),'\" -HCSWebServicesPassword \"',variables('HCSWebServicesPassword'),'\" -StorageContainerName \"',variables('StorageContainerName'),'\" -StorageSasToken \"',variables('StorageSasToken'),'\" -style \"',variables('style'),'\"')]"
                 },
                 "protectedSettings": {}
             }
