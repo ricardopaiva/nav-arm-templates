@@ -50,7 +50,7 @@ param
        [string] $HCCProjectDirectory       = "",
        [string] $HCSWebServicesURL         = "",
        [string] $HCSWebServicesUsername    = "",
-       [string] $HCSWebServicesPassword    = "".
+       [string] $HCSWebServicesPassword    = "",
        [string] $StorageContainerName      = "",
        [string] $StorageSasToken           = ""
 )
