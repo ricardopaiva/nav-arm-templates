@@ -72,12 +72,14 @@ $Arguments = @{
         Localization = $BCLocalization
         WsUri = $HCSWebServicesURL
         WsUser = $HCSWebServicesUsername
-        WsPassword = $HCSWebServicesPassword
+        # WsPassword = $HCSWebServicesPassword
     }
 }
-AddToStatus "Arguments: $($Arguments)"
-AddToStatus "Arguments Values: $($Arguments.Values)"
 Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
+
+$ProjectJson = Get-Content -Path (Join-Path $HCCProjectDirectory 'Project.json') | ConvertFrom-Json
+$ProjectJson.WsPassword = $HCSWebServicesPassword
+ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Project.json')
 
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
