@@ -51,7 +51,7 @@ param
        [string] $HCSWebServicesURL         = "",
        [string] $HCSWebServicesUsername    = "",
        [string] $HCSWebServicesPassword    = "",
-       [string] $storageAccountName        = "",
+       [string] $StorageAccountName        = "",
        [string] $StorageContainerName      = "",
        [string] $StorageSasToken           = ""
 )
@@ -155,7 +155,7 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "HCSWebServicesUsername" | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesPassword" | Add-Content $settingsScript
     Get-VariableDeclaration -name "BCLocalization"         | Add-Content $settingsScript
-    Get-VariableDeclaration -name "storageAccountName"     | Add-Content $settingsScript
+    Get-VariableDeclaration -name "StorageAccountName"     | Add-Content $settingsScript
     Get-VariableDeclaration -name "StorageContainerName"   | Add-Content $settingsScript
     Get-VariableDeclaration -name "StorageSasToken"        | Add-Content $settingsScript
 
