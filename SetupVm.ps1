@@ -36,13 +36,6 @@ if ($WindowsInstallationType -eq "Server") {
     New-ItemProperty -Path "HKCU:\Software\Microsoft\ServerManager" -Name "DoNotOpenServerManagerAtLogon" -PropertyType "DWORD" -Value "0x1" –Force | Out-Null
 }
 
-AddToStatus "Adding Landing Page to Startup Group"
-$landingPageUrl = "http://${publicDnsName}"
-New-DesktopShortcut -Name "Landing Page" -TargetPath "C:\Program Files\Internet Explorer\iexplore.exe" -Shortcuts "CommonStartup" -Arguments $landingPageUrl
-if ($style -eq "devpreview") {
-    New-DesktopShortcut -Name "Modern Dev Tools" -TargetPath "C:\Program Files\Internet Explorer\iexplore.exe" -Shortcuts "CommonStartup" -Arguments "http://aka.ms/moderndevtools"
-}
-
 # AddToStatus "Installing Visual C++ Redist"
 # $vcRedistUrl = "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe"
 # $vcRedistFile = "C:\DOWNLOAD\vcredist_x86.exe"
