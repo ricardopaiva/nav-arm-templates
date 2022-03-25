@@ -13,13 +13,6 @@ function AddToStatus([string]$line, [string]$color = "Gray") {
 
 AddToStatus "SetupVm, User: $env:USERNAME"
 
-if (Test-Path -Path "C:\demo\*\BcContainerHelper.psm1") {
-    $module = Get-Item -Path "C:\demo\*\BcContainerHelper.psm1"
-    Import-module $module.FullName -DisableNameChecking
-} else {
-    Import-Module -name bccontainerhelper -DisableNameChecking
-}
-
 . (Join-Path $PSScriptRoot "settings.ps1")
 
 . "c:\demo\SetupHybridCloudServer.ps1"
@@ -43,17 +36,6 @@ if ($WindowsInstallationType -eq "Server") {
     New-ItemProperty -Path "HKCU:\Software\Microsoft\ServerManager" -Name "DoNotOpenServerManagerAtLogon" -PropertyType "DWORD" -Value "0x1" –Force | Out-Null
 }
 
-AddToStatus "Add Import bccontainerhelper to PowerShell profile"
-$winPsFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "WindowsPowerShell"
-New-Item $winPsFolder -ItemType Directory -Force -ErrorAction Ignore | Out-Null
-
-'if (Test-Path -Path "C:\demo\*\BcContainerHelper.psm1") {
-    $module = Get-Item -Path "C:\demo\*\BcContainerHelper.psm1"
-    Import-module $module.FullName -DisableNameChecking
-} else {
-    Import-Module -name bccontainerhelper -DisableNameChecking
-}' | Set-Content (Join-Path $winPsFolder "Profile.ps1")
-
 AddToStatus "Adding Landing Page to Startup Group"
 $landingPageUrl = "http://${publicDnsName}"
 New-DesktopShortcut -Name "Landing Page" -TargetPath "C:\Program Files\Internet Explorer\iexplore.exe" -Shortcuts "CommonStartup" -Arguments $landingPageUrl
@@ -61,23 +43,23 @@ if ($style -eq "devpreview") {
     New-DesktopShortcut -Name "Modern Dev Tools" -TargetPath "C:\Program Files\Internet Explorer\iexplore.exe" -Shortcuts "CommonStartup" -Arguments "http://aka.ms/moderndevtools"
 }
 
-AddToStatus "Installing Visual C++ Redist"
-$vcRedistUrl = "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe"
-$vcRedistFile = "C:\DOWNLOAD\vcredist_x86.exe"
-Download-File -sourceUrl $vcRedistUrl -destinationFile $vcRedistFile
-Start-Process $vcRedistFile -argumentList "/q" -wait
+# AddToStatus "Installing Visual C++ Redist"
+# $vcRedistUrl = "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe"
+# $vcRedistFile = "C:\DOWNLOAD\vcredist_x86.exe"
+# Download-File -sourceUrl $vcRedistUrl -destinationFile $vcRedistFile
+# Start-Process $vcRedistFile -argumentList "/q" -wait
 
-AddToStatus "Installing SQL Native Client"
-$sqlncliUrl = "https://download.microsoft.com/download/3/A/6/3A632674-A016-4E31-A675-94BE390EA739/ENU/x64/sqlncli.msi"
-$sqlncliFile = "C:\DOWNLOAD\sqlncli.msi"
-Download-File -sourceUrl $sqlncliUrl -destinationFile $sqlncliFile
-Start-Process "C:\Windows\System32\msiexec.exe" -argumentList "/i $sqlncliFile ADDLOCAL=ALL IACCEPTSQLNCLILICENSETERMS=YES /qn" -wait
+# AddToStatus "Installing SQL Native Client"
+# $sqlncliUrl = "https://download.microsoft.com/download/3/A/6/3A632674-A016-4E31-A675-94BE390EA739/ENU/x64/sqlncli.msi"
+# $sqlncliFile = "C:\DOWNLOAD\sqlncli.msi"
+# Download-File -sourceUrl $sqlncliUrl -destinationFile $sqlncliFile
+# Start-Process "C:\Windows\System32\msiexec.exe" -argumentList "/i $sqlncliFile ADDLOCAL=ALL IACCEPTSQLNCLILICENSETERMS=YES /qn" -wait
 
-AddToStatus "Installing OpenXML 2.5"
-$openXmlUrl = "https://download.microsoft.com/download/5/5/3/553C731E-9333-40FB-ADE3-E02DC9643B31/OpenXMLSDKV25.msi"
-$openXmlFile = "C:\DOWNLOAD\OpenXMLSDKV25.msi"
-Download-File -sourceUrl $openXmlUrl -destinationFile $openXmlFile
-Start-Process $openXmlFile -argumentList "/qn /q /passive" -wait
+# AddToStatus "Installing OpenXML 2.5"
+# $openXmlUrl = "https://download.microsoft.com/download/5/5/3/553C731E-9333-40FB-ADE3-E02DC9643B31/OpenXMLSDKV25.msi"
+# $openXmlFile = "C:\DOWNLOAD\OpenXMLSDKV25.msi"
+# Download-File -sourceUrl $openXmlUrl -destinationFile $openXmlFile
+# Start-Process $openXmlFile -argumentList "/qn /q /passive" -wait
 
 $beforeContainerSetupScript = (Join-Path $PSScriptRoot "BeforeContainerSetupScript.ps1")
 if (Test-Path $beforeContainerSetupScript) {

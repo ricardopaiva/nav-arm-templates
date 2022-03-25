@@ -40,11 +40,6 @@ $ComputerInfo = Get-ComputerInfo
 $WindowsInstallationType = $ComputerInfo.WindowsInstallationType
 $WindowsProductName = $ComputerInfo.WindowsProductName
 
-AddToStatus "Installing Latest Business Central Container Helper from PowerShell Gallery"
-Install-Module -Name bccontainerhelper -Force
-Import-Module -Name bccontainerhelper -DisableNameChecking
-AddToStatus ("Using BcContainerHelper version "+(get-module BcContainerHelper).Version.ToString())
-
 # if (-not (Get-InstalledModule Az -ErrorAction SilentlyContinue)) {
 #     AddToStatus "Installing Az module (this might take a while)"
 #     Install-Module Az -Force
