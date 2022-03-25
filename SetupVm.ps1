@@ -89,8 +89,9 @@ if ($RunWindowsUpdate -eq "Yes") {
 }
 
 # if (!($imageName)) {
-    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
+#    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
 # }
+Move-Item -path "c:\demo\status.txt" "c:\demo\status-archive.txt" -Force -ErrorAction SilentlyContinue
 
 shutdown -r -t 30
 
