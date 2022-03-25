@@ -139,7 +139,6 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "WindowsInstallationType"| Add-Content $settingsScript
     Get-VariableDeclaration -name "WindowsProductName"     | Add-Content $settingsScript
     Get-VariableDeclaration -name "RemoteDesktopAccess"    | Add-Content $settingsScript
-    Get-VariableDeclaration -name "WinRmAccess"            | Add-Content $settingsScript
     Get-VariableDeclaration -name "nchBranch"              | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCCProjectDirectory"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesURL"      | Add-Content $settingsScript
