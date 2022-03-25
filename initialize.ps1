@@ -14,7 +14,6 @@ param
        [string] $navDockerImage            = "",
        [string] $registryUsername          = "",
        [string] $registryPassword          = "",
-       [string] $sqlServerType             = "SQLExpress",
        [string] $azureSqlServer            = "",
        [string] $appBacpacUri              = "",
        [string] $tenantBacpacUri           = "",
@@ -26,8 +25,6 @@ param
        [string] $clickonce                 = "No",
        [string] $enableTaskScheduler       = "Default",
        [string] $licenseFileUri            = "",
-       [string] $certificatePfxUrl         = "",
-       [string] $certificatePfxPassword    = "",
        [string] $publicDnsName             = "",
 	   [string] $beforeContainerSetupScriptUrl = "",
 	   [string] $finalSetupScriptUrl       = "",
@@ -38,13 +35,10 @@ param
        [string] $CreateAadUsers            = "No",
        [string] $RunWindowsUpdate          = "No",
        [string] $Multitenant               = "No",
-       [string] $ContactEMailForLetsEncrypt= "",
        [string] $RemoteDesktopAccess       = "*",
-       [string] $WinRmAccess               = "-",
        [string] $Office365UserName         = "",
        [string] $Office365Password         = "",
        [string] $Office365CreatePortal     = "No",
-       [string] $AddTraefik                = "No",
        [string] $nchBranch                 = "",
        [string] $BCLocalization            = "W1",
        [string] $HCCProjectDirectory       = "",
@@ -123,7 +117,6 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "navDockerImage"         | Add-Content $settingsScript
     Get-VariableDeclaration -name "registryUsername"       | Add-Content $settingsScript
     Get-VariableDeclaration -name "registryPassword"       | Add-Content $settingsScript
-    Get-VariableDeclaration -name "sqlServerType"          | Add-Content $settingsScript
     Get-VariableDeclaration -name "azureSqlServer"         | Add-Content $settingsScript
     Get-VariableDeclaration -name "appBacpacUri"           | Add-Content $settingsScript
     Get-VariableDeclaration -name "tenantBacpacUri"        | Add-Content $settingsScript
@@ -145,10 +138,8 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "Multitenant"            | Add-Content $settingsScript
     Get-VariableDeclaration -name "WindowsInstallationType"| Add-Content $settingsScript
     Get-VariableDeclaration -name "WindowsProductName"     | Add-Content $settingsScript
-    Get-VariableDeclaration -name "ContactEMailForLetsEncrypt" | Add-Content $settingsScript
     Get-VariableDeclaration -name "RemoteDesktopAccess"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "WinRmAccess"            | Add-Content $settingsScript
-    Get-VariableDeclaration -name "AddTraefik"             | Add-Content $settingsScript
     Get-VariableDeclaration -name "nchBranch"              | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCCProjectDirectory"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesURL"      | Add-Content $settingsScript
@@ -192,7 +183,6 @@ if (Test-Path -Path "c:\DEMO\Status.txt" -PathType Leaf) {
 }
 
 Set-Content "c:\DEMO\RemoteDesktopAccess.txt" -Value $RemoteDesktopAccess
-Set-Content "c:\DEMO\WinRmAccess.txt" -Value $WinRmAccess
 
 Set-ExecutionPolicy -ExecutionPolicy unrestricted -Force
 
@@ -250,6 +240,7 @@ if ($WindowsInstallationType -eq "Server") {
 $setupStartScript = "c:\demo\SetupStart.ps1"
 $setupVmScript = "c:\demo\SetupVm.ps1"
 $setupHybridCloudServer = "c:\demo\SetupHybridCloudServer.ps1"
+$setupHybridCloudServerFinishScript = "c:\demo\SetupHybridCloudServerFinishScript.ps1"
 $setupSSMS = "c:\demo\SetupSSMS.ps1"
 
 if ($vmAdminUsername -ne $navAdminUsername) {
@@ -267,8 +258,8 @@ Add-LocalGroupMember -Group administrators -Member $hostUsername -ErrorAction Ig
 
 Download-File -sourceUrl "$($scriptPath)SetupVm.ps1"           -destinationFile $setupVmScript
 Download-File -sourceUrl "$($scriptPath)SetupStart.ps1"        -destinationFile $setupStartScript
-Download-File -sourceUrl "$($scriptPath)RestartContainers.ps1" -destinationFile "c:\demo\restartContainers.ps1"
 Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServer.ps1" -destinationFile $setupHybridCloudServer
+Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServerFinishScript.ps1" -destinationFile $setupHybridCloudServerFinishScript
 Download-File -sourceUrl "$($scriptPath)SetupSSMS.ps1" -destinationFile $setupSSMS
 
 if ($beforeContainerSetupScriptUrl) {
@@ -285,39 +276,6 @@ if ($finalSetupScriptUrl) {
     }
     $finalSetupScript = "c:\demo\FinalSetupScript.ps1"
     Download-File -sourceUrl $finalSetupScriptUrl -destinationFile $finalSetupScript
-}
-
-if ($certificatePfxUrl -ne "" -and $certificatePfxPassword -ne "") {
-    Download-File -sourceUrl $certificatePfxUrl -destinationFile "c:\myfolder\certificate.pfx"
-
-('$certificatePfxPassword = "'+$certificatePfxPassword+'"
-$certificatePfxFile = Join-Path $PSScriptRoot "certificate.pfx"
-$cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePfxFile, $certificatePfxPassword)
-$certificateThumbprint = $cert.Thumbprint
-Write-Host "Certificate File Thumbprint $certificateThumbprint"
-if (!(Get-Item Cert:\LocalMachine\my\$certificateThumbprint -ErrorAction SilentlyContinue)) {
-    Write-Host "Importing Certificate to LocalMachine\my"
-    Import-PfxCertificate -FilePath $certificatePfxFile -CertStoreLocation cert:\localMachine\my -Password (ConvertTo-SecureString -String $certificatePfxPassword -AsPlainText -Force) | Out-Null
-}
-$dnsidentity = $cert.GetNameInfo("SimpleName",$false)
-if ($dnsidentity.StartsWith("*")) {
-    $dnsidentity = $dnsidentity.Substring($dnsidentity.IndexOf(".")+1)
-}
-Write-Host "DNS identity $dnsidentity"
-') | Set-Content "c:\myfolder\SetupCertificate.ps1"
-
-('Write-Host "DNS identity $dnsidentity"
-') | Set-Content "c:\myfolder\AdditionalSetup.ps1"
-
-$ContactEMailForLetsEncrypt = ""
-Get-VariableDeclaration -name "ContactEMailForLetsEncrypt" | Add-Content $settingsScript
-
-}
-
-if ($AddTraefik -eq "yes" -and [environment]::OSVersion.Version.Build -ne 17763) {
-    # Traefik currently requires hyperv if not 1809
-    AddToStatus "Enable Hyper-V and containers (needed by Traefik)"
-    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V, Containers -All -NoRestart | Out-Null
 }
 
 $installDocker = (!(Test-Path -Path "C:\Program Files\Docker\docker.exe" -PathType Leaf))

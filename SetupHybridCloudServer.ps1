@@ -135,8 +135,24 @@ $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundle
 
 # TODO: Include OPOS drivers (?)
 
-AddToStatus "Creating the POS Master and POS bundle"
-& .\NewBundlePackage.ps1 -Import
+$setupHybridCloudServerFinishScript = "c:\demo\SetupHybridCloudServerFinishScript.ps1"
 
-AddToStatus "Installing the POS Master"
-& .\UpdatePosMaster.ps1
+$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinishScript"
+$startupTrigger = New-ScheduledTaskTrigger -AtStartup
+$startupTrigger.Delay = "PT1M"
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
+Register-ScheduledTask -TaskName "FinishHybridSetup" `
+                       -Action $startupAction `
+                       -Trigger $startupTrigger `
+                       -Settings $settings `
+                       -RunLevel "Highest" `
+                       -User "NT AUTHORITY\SYSTEM" | Out-Null
+
+# Will run after the start on the SetupVm.ps1
+AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
+
+# AddToStatus "Creating the POS Master and POS bundle"
+# & .\NewBundlePackage.ps1 -Import
+
+# AddToStatus "Installing the POS Master"
+# & .\UpdatePosMaster.ps1

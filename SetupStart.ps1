@@ -86,22 +86,6 @@ if (-not (Get-InstalledModule SqlServer -ErrorAction SilentlyContinue)) {
 $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
 $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
 
-$taskName = "RestartContainers"
-if (-not (Get-ScheduledTask -TaskName $taskName -ErrorAction Ignore)) {
-    AddToStatus "Register RestartContainers Task to start container delayed"
-    $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -file c:\demo\restartcontainers.ps1"
-    $startupTrigger = New-ScheduledTaskTrigger -AtStartup
-    $startupTrigger.Delay = "PT5M"
-    $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-    $task = Register-ScheduledTask -TaskName $taskName `
-                           -Action $startupAction `
-                           -Trigger $startupTrigger `
-                           -Settings $settings `
-                           -RunLevel Highest `
-                           -User $vmadminUsername `
-                           -Password $plainPassword
-}
-
 if ($WindowsInstallationType -eq "Server") {
 
     if (Get-ScheduledTask -TaskName SetupVm -ErrorAction Ignore) {
