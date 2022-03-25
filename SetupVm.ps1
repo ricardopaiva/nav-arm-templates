@@ -61,31 +61,6 @@ if ($style -eq "devpreview") {
     New-DesktopShortcut -Name "Modern Dev Tools" -TargetPath "C:\Program Files\Internet Explorer\iexplore.exe" -Shortcuts "CommonStartup" -Arguments "http://aka.ms/moderndevtools"
 }
 
-# if ($artifactUrl -ne "") {
-#     $imageName = Get-BestGenericImageName
-#     AddToStatus "Pulling $imageName (this might take some time)"
-#     if (!(DockerDo -imageName $imageName -command pull))  {
-#         throw "Error pulling image"
-#     }
-# }
-# else {
-#     $imageName = ""
-#     $navDockerImage.Split(',') | Where-Object { $_ } | ForEach-Object {
-#         $registry = $_.Split('/')[0]
-#         if (($registry -ne "microsoft") -and ($registryUsername -ne "") -and ($registryPassword -ne "")) {
-#             AddToStatus "Logging in to $registry"
-#             docker login "$registry" -u "$registryUsername" -p "$registryPassword"
-#         }
-    
-#         $imageName = Get-BestNavContainerImageName -imageName $_
-    
-#         AddToStatus "Pulling $imageName (this might take ~30 minutes)"
-#         if (!(DockerDo -imageName $imageName -command pull))  {
-#             throw "Error pulling image"
-#         }
-#     }
-# }
-
 AddToStatus "Installing Visual C++ Redist"
 $vcRedistUrl = "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe"
 $vcRedistFile = "C:\DOWNLOAD\vcredist_x86.exe"
@@ -132,7 +107,7 @@ if ($RunWindowsUpdate -eq "Yes") {
 }
 
 # if (!($imageName)) {
-#     Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
+    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
 # }
 
 shutdown -r -t 30

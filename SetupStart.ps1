@@ -40,29 +40,10 @@ $ComputerInfo = Get-ComputerInfo
 $WindowsInstallationType = $ComputerInfo.WindowsInstallationType
 $WindowsProductName = $ComputerInfo.WindowsProductName
 
-if ($nchBranch -eq "preview") {
-    AddToStatus "Installing Latest BcContainerHelper preview from PowerShell Gallery"
-    Install-Module -Name bccontainerhelper -Force -AllowPrerelease
-    Import-Module -Name bccontainerhelper -DisableNameChecking
-    AddToStatus ("Using BcContainerHelper version "+(get-module BcContainerHelper).Version.ToString())
-}
-elseif ($nchBranch -eq "") {
-    AddToStatus "Installing Latest Business Central Container Helper from PowerShell Gallery"
-    Install-Module -Name bccontainerhelper -Force
-    Import-Module -Name bccontainerhelper -DisableNameChecking
-    AddToStatus ("Using BcContainerHelper version "+(get-module BcContainerHelper).Version.ToString())
-} else {
-    if ($nchBranch -notlike "https://*") {
-        $nchBranch = "https://github.com/Microsoft/navcontainerhelper/archive/$($nchBranch).zip"
-    }
-    AddToStatus "Using BcContainerHelper from $nchBranch"
-    Download-File -sourceUrl $nchBranch -destinationFile "c:\demo\bccontainerhelper.zip"
-    [Reflection.Assembly]::LoadWithPartialName("System.IO.Compression.Filesystem") | Out-Null
-    [System.IO.Compression.ZipFile]::ExtractToDirectory("c:\demo\bccontainerhelper.zip", "c:\demo")
-    $module = Get-Item -Path "C:\demo\*\BcContainerHelper.psm1"
-    AddToStatus "Loading BcContainerHelper from $($module.FullName)"
-    Import-Module $module.FullName -DisableNameChecking
-}
+AddToStatus "Installing Latest Business Central Container Helper from PowerShell Gallery"
+Install-Module -Name bccontainerhelper -Force
+Import-Module -Name bccontainerhelper -DisableNameChecking
+AddToStatus ("Using BcContainerHelper version "+(get-module BcContainerHelper).Version.ToString())
 
 # if (-not (Get-InstalledModule Az -ErrorAction SilentlyContinue)) {
 #     AddToStatus "Installing Az module (this might take a while)"

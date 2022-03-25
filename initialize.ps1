@@ -4,42 +4,20 @@ param
        [string] $templateLink              = "https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/navdeveloperpreview.json",
        [string] $containerName             = "navserver",
        [string] $hostName                  = "",
-       [string] $storageConnectionString   = "",
-       [string] $isolation                 = "Default",
        [string] $vmAdminUsername           = "vmadmin",
        [string] $navAdminUsername          = "admin",
        [string] $azureSqlAdminUsername     = "sqladmin",
        [string] $adminPassword             = "P@ssword1",
-       [string] $artifactUrl               = "",
-       [string] $navDockerImage            = "",
-       [string] $registryUsername          = "",
-       [string] $registryPassword          = "",
        [string] $azureSqlServer            = "",
-       [string] $appBacpacUri              = "",
-       [string] $tenantBacpacUri           = "",
-       [string] $databaseBakUri            = "",
-       [string] $includeAppUris            = "",
-       [string] $enableSymbolLoading       = "No",
-       [string] $includeCSIDE              = "No",
-       [string] $includeAL                 = "No",
        [string] $clickonce                 = "No",
-       [string] $enableTaskScheduler       = "Default",
        [string] $licenseFileUri            = "",
        [string] $publicDnsName             = "",
 	   [string] $beforeContainerSetupScriptUrl = "",
 	   [string] $finalSetupScriptUrl       = "",
        [string] $style                     = "devpreview",
-       [string] $TestToolkit               = "No",
-       [string] $AssignPremiumPlan         = "No",
-       [string] $CreateTestUsers           = "No",
-       [string] $CreateAadUsers            = "No",
        [string] $RunWindowsUpdate          = "No",
        [string] $Multitenant               = "No",
        [string] $RemoteDesktopAccess       = "*",
-       [string] $Office365UserName         = "",
-       [string] $Office365Password         = "",
-       [string] $Office365CreatePortal     = "No",
-       [string] $nchBranch                 = "",
        [string] $BCLocalization            = "W1",
        [string] $HCCProjectDirectory       = "",
        [string] $HCSWebServicesURL         = "",
@@ -79,15 +57,6 @@ if ($publicDnsName -eq "") {
     $publicDnsName = $hostname
 }
 
-$artifactUrl = $artifactUrl.Trim()
-$navDockerImage = $navDockerImage.Trim()
-
-if ($artifactUrl -ne "" -and $navDockerImage -ne "") {
-    # Both artifact Url AND navDockerImage specified, navDockerImage wins
-    # Reason: ArtifactUrl is defaulted, navDockerImage is not - hence user must have specified a navDockerImage
-    $artifactUrl = ""
-}
-
 $ComputerInfo = Get-ComputerInfo
 $WindowsInstallationType = $ComputerInfo.WindowsInstallationType
 $WindowsProductName = $ComputerInfo.WindowsProductName
@@ -105,41 +74,20 @@ if (Test-Path $settingsScript) {
     
     Get-VariableDeclaration -name "templateLink"           | Set-Content $settingsScript
     Get-VariableDeclaration -name "hostName"               | Add-Content $settingsScript
-    Get-VariableDeclaration -name "StorageConnectionString"| Add-Content $settingsScript
     Get-VariableDeclaration -name "containerName"          | Add-Content $settingsScript
-    Get-VariableDeclaration -name "isolation"              | Add-Content $settingsScript
     Get-VariableDeclaration -name "vmAdminUsername"        | Add-Content $settingsScript
     Get-VariableDeclaration -name "navAdminUsername"       | Add-Content $settingsScript
     Get-VariableDeclaration -name "azureSqlAdminUsername"  | Add-Content $settingsScript
-    Get-VariableDeclaration -name "Office365Username"      | Add-Content $settingsScript
-    Get-VariableDeclaration -name "Office365CreatePortal"  | Add-Content $settingsScript
-    Get-VariableDeclaration -name "artifactUrl"            | Add-Content $settingsScript
-    Get-VariableDeclaration -name "navDockerImage"         | Add-Content $settingsScript
-    Get-VariableDeclaration -name "registryUsername"       | Add-Content $settingsScript
-    Get-VariableDeclaration -name "registryPassword"       | Add-Content $settingsScript
     Get-VariableDeclaration -name "azureSqlServer"         | Add-Content $settingsScript
-    Get-VariableDeclaration -name "appBacpacUri"           | Add-Content $settingsScript
-    Get-VariableDeclaration -name "tenantBacpacUri"        | Add-Content $settingsScript
-    Get-VariableDeclaration -name "databaseBakUri"         | Add-Content $settingsScript
-    Get-VariableDeclaration -name "includeAppUris"         | Add-Content $settingsScript
-    Get-VariableDeclaration -name "enableSymbolLoading"    | Add-Content $settingsScript
-    Get-VariableDeclaration -name "includeCSIDE"           | Add-Content $settingsScript
-    Get-VariableDeclaration -name "includeAL"              | Add-Content $settingsScript
     Get-VariableDeclaration -name "clickonce"              | Add-Content $settingsScript
-    Get-VariableDeclaration -name "enableTaskScheduler"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "licenseFileUri"         | Add-Content $settingsScript
     Get-VariableDeclaration -name "publicDnsName"          | Add-Content $settingsScript
     Get-VariableDeclaration -name "style"                  | Add-Content $settingsScript
     Get-VariableDeclaration -name "RunWindowsUpdate"       | Add-Content $settingsScript
-    Get-VariableDeclaration -name "TestToolkit"            | Add-Content $settingsScript
-    Get-VariableDeclaration -name "AssignPremiumPlan"      | Add-Content $settingsScript
-    Get-VariableDeclaration -name "CreateTestUsers"        | Add-Content $settingsScript
-    Get-VariableDeclaration -name "CreateAadUsers"         | Add-Content $settingsScript
     Get-VariableDeclaration -name "Multitenant"            | Add-Content $settingsScript
     Get-VariableDeclaration -name "WindowsInstallationType"| Add-Content $settingsScript
     Get-VariableDeclaration -name "WindowsProductName"     | Add-Content $settingsScript
     Get-VariableDeclaration -name "RemoteDesktopAccess"    | Add-Content $settingsScript
-    Get-VariableDeclaration -name "nchBranch"              | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCCProjectDirectory"    | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesURL"      | Add-Content $settingsScript
     Get-VariableDeclaration -name "HCSWebServicesUsername" | Add-Content $settingsScript
@@ -275,14 +223,6 @@ if ($finalSetupScriptUrl) {
     }
     $finalSetupScript = "c:\demo\FinalSetupScript.ps1"
     Download-File -sourceUrl $finalSetupScriptUrl -destinationFile $finalSetupScript
-}
-
-$installDocker = (!(Test-Path -Path "C:\Program Files\Docker\docker.exe" -PathType Leaf))
-if ($installDocker) {
-    $installDockerScriptUrl = $templateLink.Substring(0,$templateLink.LastIndexOf('/')+1)+'InstallOrUpdateDockerEngine.ps1'
-    $installDockerScript = "C:\DEMO\InstallOrUpdateDockerEngine.ps1"
-    Download-File -sourceUrl $installDockerScriptUrl -destinationFile $installDockerScript
-    . $installDockerScript -Force -envScope "Machine"
 }
 
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupStartScript"
