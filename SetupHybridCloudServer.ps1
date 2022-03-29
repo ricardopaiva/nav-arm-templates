@@ -156,3 +156,5 @@ AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
 
 # AddToStatus "Installing the POS Master"
 # & .\UpdatePosMaster.ps1
+
+shutdown -r -t 30

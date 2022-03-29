@@ -12,3 +12,11 @@ AddToStatus "Installing the POS Master"
 if (Get-ScheduledTask -TaskName FinishHybridSetup -ErrorAction Ignore) {
     schtasks /DELETE /TN FinishHybridSetup /F | Out-Null
 }
+
+# if (!($imageName)) {
+#    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
+# }
+AddToStatus "Installation finished successfully. Will restart now."
+# Move-Item -path "c:\demo\status.txt" "c:\demo\status-archive.txt" -Force -ErrorAction SilentlyContinue
+
+shutdown -r -t 30

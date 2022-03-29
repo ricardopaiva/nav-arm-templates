@@ -15,8 +15,6 @@ AddToStatus "SetupVm, User: $env:USERNAME"
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
-. "c:\demo\SetupHybridCloudServer.ps1"
-
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Ssl3 -bor [System.Net.SecurityProtocolType]::Tls -bor [System.Net.SecurityProtocolType]::Ssl3 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls12
 
 AddToStatus "Enabling File Download in IE"
@@ -84,9 +82,10 @@ if ($RunWindowsUpdate -eq "Yes") {
 # if (!($imageName)) {
 #    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
 # }
-Move-Item -path "c:\demo\status.txt" "c:\demo\status-archive.txt" -Force -ErrorAction SilentlyContinue
 
-shutdown -r -t 30
+. "c:\demo\SetupHybridCloudServer.ps1"
+
+# shutdown -r -t 30
 
 } catch {
     AddToStatus -Color Red -line $_.Exception.Message
