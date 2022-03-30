@@ -15,8 +15,10 @@ AddToStatus "Creating the POS Master and POS bundle"
 
 AddToStatus "Installing the POS Master"
 & .\UpdatePosMaster.ps1
+AddToStatus "TO REMOVE: Finished installing the POS Master"
 
 if (Get-ScheduledTask -TaskName FinishHybridSetup -ErrorAction Ignore) {
+    AddToStatus "TO REMOVE: Will remove FinishHybridSetup task"
     schtasks /DELETE /TN FinishHybridSetup /F | Out-Null
 }
 
