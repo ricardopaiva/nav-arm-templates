@@ -153,8 +153,8 @@ Register-ScheduledTask -TaskName "FinishHybridSetup" `
 # Will run after the start on the SetupVm.ps1
 AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
 
-# AddToStatus "Creating the POS Master and POS bundle"
-# & .\NewBundlePackage.ps1 -Import
+AddToStatus "Creating the POS Master and POS bundle"
+& .\NewBundlePackage.ps1 -Import
 
 # AddToStatus "Installing the POS Master"
 # & .\UpdatePosMaster.ps1

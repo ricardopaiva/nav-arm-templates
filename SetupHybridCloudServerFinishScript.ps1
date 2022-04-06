@@ -11,8 +11,8 @@ AddToStatus "Who is running this: ${whoami}"
 AddToStatus "Finishing the Hybrid Cloud Components installation"
 Set-Location $HCCProjectDirectory
 
-AddToStatus "Creating the POS Master and POS bundle"
-& .\NewBundlePackage.ps1 -Import
+# AddToStatus "Creating the POS Master and POS bundle"
+# & .\NewBundlePackage.ps1 -Import
 
 AddToStatus "Installing the POS Master"
 & .\UpdatePosMaster.ps1
