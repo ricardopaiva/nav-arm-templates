@@ -135,34 +135,30 @@ $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundle
 
 # TODO: Include OPOS drivers (?)
 
-AddToStatus "Chegou aqui - 1"
-$setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
+# $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 
-AddToStatus "Chegou aqui - 2"
-$securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
-AddToStatus "SetupHybridCloud - SecurePassword: $($securePassword)"
-$plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
-AddToStatus "SetupHybridCloud - Plain Password: $($plainPassword)"
+# $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
+# $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
 
-AddTOStatus "Chegou aqui - 3"
-
-$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
-$startupTrigger = New-ScheduledTaskTrigger -AtStartup
-$startupTrigger.Delay = "PT1M"
-$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-Register-ScheduledTask -TaskName "FinishHybridSetup" `
-                       -Action $startupAction `
-                       -Trigger $startupTrigger `
-                       -Settings $settings `
-                       -RunLevel "Highest" `
-                       -User $vmAdminUsername `
-                       -Password $plainPassword | Out-Null
+# $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
+# $startupTrigger = New-ScheduledTaskTrigger -AtStartup
+# $startupTrigger.Delay = "PT1M"
+# $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
+# Register-ScheduledTask -TaskName "FinishHybridSetup" `
+#                        -Action $startupAction `
+#                        -Trigger $startupTrigger `
+#                        -Settings $settings `
+#                        -RunLevel "Highest" `
+#                        -User $vmAdminUsername `
+#                        -Password $plainPassword | Out-Null
 
 # Will run after the start on the SetupVm.ps1
-AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
+# AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
 
 AddToStatus "Creating the POS Master and POS bundle"
 & .\NewBundlePackage.ps1 -Import
+
+AddToStatus "After the restart, login to the virtual machine and run the $setupHybridCloudServerFinal script"
 
 # AddToStatus "Installing the POS Master"
 # & .\UpdatePosMaster.ps1
