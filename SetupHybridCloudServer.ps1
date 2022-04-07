@@ -137,6 +137,9 @@ $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundle
 
 $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 
+$securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
+$plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
+
 # $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
@@ -147,8 +150,8 @@ Register-ScheduledTask -TaskName "FinishHybridSetup" `
                        -Trigger $startupTrigger `
                        -Settings $settings `
                        -RunLevel "Highest" `
-                       -User "$env:USERDOMAIN\$vmAdminUsername" `
-                       -Password $adminPassword | Out-Null
+                       -User $vmAdminUsername `
+                       -Password $plainPassword | Out-Null
 
 # Will run after the start on the SetupVm.ps1
 AddToStatus "Will finish Hybrid Cloud Server setup after the restart"

@@ -225,6 +225,9 @@ if ($finalSetupScriptUrl) {
     Download-File -sourceUrl $finalSetupScriptUrl -destinationFile $finalSetupScript
 }
 
+$securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
+$plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
+
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupStartScript"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
@@ -234,7 +237,8 @@ Register-ScheduledTask -TaskName "SetupStart" `
                        -Trigger $startupTrigger `
                        -Settings $settings `
                        -RunLevel "Highest" `
-                       -User "NT AUTHORITY\SYSTEM" | Out-Null
+                       -User $vmAdminUsername `
+                       -Password $plainPassword | Out-Null
 
 AddToStatus "Restarting computer and start Installation tasks"
 Shutdown -r -t 60
