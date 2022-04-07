@@ -66,8 +66,8 @@ AddToStatus "Preparing Hybrid Cloud Components project"
 $Arguments = @{
     'ls-central-hcc-project' = @{
         ProjectDir = $HCCProjectDirectory
-        CompanyName = 'Cronus'
-        PackageIdPrefix = 'cronus'
+        CompanyName = 'POSMaster'
+        PackageIdPrefix = 'posmaster'
         Localization = $BCLocalization
         WsUri = $HCSWebServicesURL
         WsUser = $HCSWebServicesUsername
@@ -141,8 +141,9 @@ $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-N
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-AddToStatus "vm admin username: ${$vmAdminUsername}"
-AddToStatus "vm admin password: ${$adminPassword}"
+AddToStatus "vm admin username: $($vmAdminUsername)"
+AddToStatus "vm admin password: $($adminPassword)"
+AddToStatus "1"
 Register-ScheduledTask -TaskName "FinishHybridSetup" `
                        -Action $startupAction `
                        -Trigger $startupTrigger `
