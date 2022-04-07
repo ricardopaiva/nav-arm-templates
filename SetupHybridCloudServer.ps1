@@ -138,7 +138,9 @@ $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundle
 $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 
 $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
+AddStatus("SetupHybridCloud - SecurePassword: $(securePassword)")
 $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
+AddStatus("SetupHybridCloud - Plain Password: $(plainPassword)")
 
 # $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
