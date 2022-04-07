@@ -225,47 +225,16 @@ if ($finalSetupScriptUrl) {
     Download-File -sourceUrl $finalSetupScriptUrl -destinationFile $finalSetupScript
 }
 
-
-
-AddToStatus "Chegou aqui - 1"
-$setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
-
-AddToStatus "Chegou aqui - 2"
-$securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
-AddToStatus "SetupHybridCloud - SecurePassword: $($securePassword)"
-$plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
-AddToStatus "SetupHybridCloud - Plain Password: $($plainPassword)"
-
-AddTOStatus "Chegou aqui - 3"
-
-AddToStatus "REMOVE THIS!!!"
-$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
+$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupStartScript"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-Register-ScheduledTask -TaskName "FinishHybridSetup" `
+Register-ScheduledTask -TaskName "SetupStart" `
                        -Action $startupAction `
                        -Trigger $startupTrigger `
                        -Settings $settings `
                        -RunLevel "Highest" `
-                       -User $vmAdminUsername `
-                       -Password $plainPassword | Out-Null
-
-
-
-
-
-AddToStatus "UNCOMMENT THIS!!"
-# $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupStartScript"
-# $startupTrigger = New-ScheduledTaskTrigger -AtStartup
-# $startupTrigger.Delay = "PT1M"
-# $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-# Register-ScheduledTask -TaskName "SetupStart" `
-#                        -Action $startupAction `
-#                        -Trigger $startupTrigger `
-#                        -Settings $settings `
-#                        -RunLevel "Highest" `
-#                        -User "NT AUTHORITY\SYSTEM" | Out-Null
+                       -User "NT AUTHORITY\SYSTEM" | Out-Null
 
 AddToStatus "Restarting computer and start Installation tasks"
 Shutdown -r -t 60
