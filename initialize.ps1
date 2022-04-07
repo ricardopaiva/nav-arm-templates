@@ -227,16 +227,16 @@ if ($finalSetupScriptUrl) {
 
 
 
-AddStatus "Chegou aqui - 1"
+AddToStatus "Chegou aqui - 1"
 $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 
-AddStatus "Chegou aqui - 2"
+AddToStatus "Chegou aqui - 2"
 $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
-AddStatus "SetupHybridCloud - SecurePassword: $($securePassword)"
+AddToStatus "SetupHybridCloud - SecurePassword: $($securePassword)"
 $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
-AddStatus "SetupHybridCloud - Plain Password: $($plainPassword)"
+AddToStatus "SetupHybridCloud - Plain Password: $($plainPassword)"
 
-AddStatus "Chegou aqui - 3"
+AddTOStatus "Chegou aqui - 3"
 
 AddToStatus "REMOVE THIS!!!"
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
