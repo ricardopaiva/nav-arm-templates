@@ -60,9 +60,9 @@ if (-not (Get-InstalledModule SqlServer -ErrorAction SilentlyContinue)) {
 }
 
 $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
-AddStatus("SetupStart - SecurePassword: $(securePassword)")
+AddStatus("SetupStart - SecurePassword: $($securePassword)")
 $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
-AddStatus("SetupStart - Plain Password: $(plainPassword)")
+AddStatus("SetupStart - Plain Password: $($plainPassword)")
 
 if ($WindowsInstallationType -eq "Server") {
 
