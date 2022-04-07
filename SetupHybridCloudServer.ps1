@@ -140,13 +140,13 @@ $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
-$principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
 Register-ScheduledTask -TaskName "FinishHybridSetup" `
                        -Action $startupAction `
                        -Trigger $startupTrigger `
                        -Settings $settings `
-                       -Principal $principal | Out-Null
+                       -User $vmAdminUsername `
+                       -Password $adminPassword | Out-Null
 
 # Will run after the start on the SetupVm.ps1
 AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
