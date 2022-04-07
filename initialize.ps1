@@ -187,7 +187,7 @@ if ($WindowsInstallationType -eq "Server") {
 $setupStartScript = "c:\demo\SetupStart.ps1"
 $setupVmScript = "c:\demo\SetupVm.ps1"
 $setupHybridCloudServer = "c:\demo\SetupHybridCloudServer.ps1"
-$setupHybridCloudServerFinishScript = "c:\demo\SetupHybridCloudServerFinishScript.ps1"
+$setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 $setupSSMS = "c:\demo\SetupSSMS.ps1"
 
 if ($vmAdminUsername -ne $navAdminUsername) {
@@ -206,7 +206,7 @@ Add-LocalGroupMember -Group administrators -Member $hostUsername -ErrorAction Ig
 Download-File -sourceUrl "$($scriptPath)SetupVm.ps1"           -destinationFile $setupVmScript
 Download-File -sourceUrl "$($scriptPath)SetupStart.ps1"        -destinationFile $setupStartScript
 Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServer.ps1" -destinationFile $setupHybridCloudServer
-Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServerFinishScript.ps1" -destinationFile $setupHybridCloudServerFinishScript
+Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServerFinal.ps1" -destinationFile $setupHybridCloudServerFinal
 Download-File -sourceUrl "$($scriptPath)SetupSSMS.ps1" -destinationFile $setupSSMS
 
 if ($beforeContainerSetupScriptUrl) {

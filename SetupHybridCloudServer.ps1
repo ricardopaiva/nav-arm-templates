@@ -135,21 +135,18 @@ $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundle
 
 # TODO: Include OPOS drivers (?)
 
-$setupHybridCloudServerFinishScript = "c:\demo\SetupHybridCloudServerFinishScript.ps1"
+$setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 
-$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinishScript"
+$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
+$principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-AddToStatus "vm admin username: $($vmAdminUsername)"
-AddToStatus "vm admin password: $($adminPassword)"
-AddToStatus "1"
 Register-ScheduledTask -TaskName "FinishHybridSetup" `
                        -Action $startupAction `
                        -Trigger $startupTrigger `
                        -Settings $settings `
-                       -User $vmAdminUsername `
-                       -Password $adminPassword | Out-Null
+                       -Principal $principal | Out-Null
 
 # Will run after the start on the SetupVm.ps1
 AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
