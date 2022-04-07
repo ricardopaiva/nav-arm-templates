@@ -137,7 +137,8 @@ $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundle
 
 $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 
-$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
+# $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
+$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
@@ -145,7 +146,8 @@ Register-ScheduledTask -TaskName "FinishHybridSetup" `
                        -Action $startupAction `
                        -Trigger $startupTrigger `
                        -Settings $settings `
-                       -User $vmAdminUsername `
+                       -RunLevel "Highest" `
+                       -User "$env:USERDOMAIN\$vmAdminUsername" `
                        -Password $adminPassword | Out-Null
 
 # Will run after the start on the SetupVm.ps1
