@@ -137,20 +137,20 @@ $newBundlePackage | Set-Content -Path (Join-Path $HCCProjectDirectory 'NewBundle
 
 $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 
-# $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
-# $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
+$securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
+$plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
 
-# $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
-# $startupTrigger = New-ScheduledTaskTrigger -AtStartup
-# $startupTrigger.Delay = "PT1M"
-# $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-# Register-ScheduledTask -TaskName "FinishHybridSetup" `
-#                        -Action $startupAction `
-#                        -Trigger $startupTrigger `
-#                        -Settings $settings `
-#                        -RunLevel "Highest" `
-#                        -User $vmAdminUsername `
-#                        -Password $plainPassword | Out-Null
+$startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
+$startupTrigger = New-ScheduledTaskTrigger -AtStartup
+$startupTrigger.Delay = "PT1M"
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
+Register-ScheduledTask -TaskName "FinishHybridSetup" `
+                       -Action $startupAction `
+                       -Trigger $startupTrigger `
+                       -Settings $settings `
+                       -RunLevel "Highest" `
+                       -User $vmAdminUsername `
+                       -Password $plainPassword | Out-Null
 
 # Will run after the start on the SetupVm.ps1
 # AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
@@ -162,45 +162,5 @@ AddToStatus "After the restart, login to the virtual machine and run the $setupH
 
 # AddToStatus "Installing the POS Master"
 # & .\UpdatePosMaster.ps1
-
-## UpdatePosMaster.ps1 first part, start
-
-$ErrorActionPreference = 'stop'
-
-Import-Module GoCurrent
-Import-Module (Join-Path $PSScriptRoot 'Utils.psm1')
-$Config = Get-ProjectConfig
-
-$Arguments = @{
-    'bc-server' = @{
-        NewDatabase = $true.ToString()
-        ConnectionString = $Config.DbConnectionString
-        NASServicesStartupCodeunit = "99001468"
-        NASServicesStartupMethod = "LSRSCHEDULER"
-        NASServicesStartupArgument = "NASID,TYPEFILTER=HCC_Master,LOG=1,REPEAT=1"
-    }
-    'bc-db-components' = @{
-        'ConnectionString' = '${bc-server.ConnectionString}'
-    }
-    "ls-central-hcc-data" = @{
-        CompanyName = $Config.CompanyName
-        WsUri = $Config.WsUri
-        WsUser = $Config.WsUser
-        WsPassword = $Config.WsPassword
-    }
-}
-
-$Packages = @(
-    @{ Id = "bc-db-components"; Version = $Config.BcPlatformVersion}
-    @{ Id = "bundle/$($Config.PackageIdPrefix)-pos-master"; Version = ''}
-    @{ Id = "ls-central-hcc-data"; Version = ""}
-)
-
-Write-Host "Installing the following packages:"
-$Packages | Get-GocUpdates -InstanceName $Config.InstanceName | Format-Table -AutoSize | Out-String | Write-Host
-
-$Packages | Install-GocPackage -Arguments $Arguments -InstanceName $Config.InstanceName -UpdateInstance
-
-## UpdatePosMaster.ps1 first part, end
 
 shutdown -r -t 30

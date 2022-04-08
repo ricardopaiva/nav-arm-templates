@@ -83,6 +83,7 @@ if ($RunWindowsUpdate -eq "Yes") {
 #    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
 # }
 
+. "c:\demo\setupPrerequirements.ps1"
 . "c:\demo\SetupHybridCloudServer.ps1"
 
 # shutdown -r -t 30

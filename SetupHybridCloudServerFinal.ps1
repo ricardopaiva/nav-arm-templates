@@ -15,25 +15,7 @@ Set-Location $HCCProjectDirectory
 # & .\NewBundlePackage.ps1 -Import
 
 AddToStatus "Installing the POS Master"
-# & .\UpdatePosMaster.ps1
-
-## UpdatePosMaster.ps1 second part, start
-$ErrorActionPreference = 'stop'
-
-Import-Module GoCurrent
-Import-Module (Join-Path $PSScriptRoot 'Utils.psm1')
-$Config = Get-ProjectConfig
-
-$BcServer = Get-GocInstalledPackage -InstanceName $Config.InstanceName -Id 'bc-server'
-
-Import-Module (Join-Path $BcServer.Info.ServerDir 'Microsoft.Dynamics.Nav.Management.psd1')
-
-if (!(Get-NAVCompany -ServerInstance $BcServer.Info.ServerInstance -ErrorAction SilentlyContinue))
-{
-    Write-Host "Creating new company ..."
-    New-NAVCompany -CompanyName $Config.Name -ServerInstance $BcServer.Info.ServerInstance
-}
-## UpdatePosMaster.ps1 second part, end
+& .\UpdatePosMaster.ps1
 
 AddToStatus "TO REMOVE: Finished installing the POS Master"
 
