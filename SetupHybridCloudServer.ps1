@@ -31,16 +31,17 @@ $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath",
 AddToStatus "Installing SQL Server Express (this might take a while)"
 Install-GocPackage -Id 'sql-server-express'
 
+AddToStatus "Configuring the SQL Server authentication mode to mixed mode"
+# Get-SqlInstance -Credential $Credential -MachineName $hostname | Set-SqlAuthenticationMode -Credential $Credential -Mode Mixed -SqlCredential $sqlCredential -NoServiceRestart -AcceptSelfSignedCertificate
+#Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQLServer" -Name "LoginMode" -Value 2 -ErrorAction SilentlyContinue | Out-Null
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQLServer" -Name "LoginMode" -Value 2 | Out-Null
+Restart-Service -Force 'MSSQL$SQLEXPRESS'
+
 # AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this might take a while)"
 # . "c:\demo\SetupSSMS.ps1"
 
 AddToStatus "Installing LS Data Director Service"
 Install-GocPackage -Id 'ls-dd-service'
-
-AddToStatus "Enabling Web Services in LS Data Director"
-$ddConfigFilename = "C:\ProgramData\LS Retail\Data Director\lsretail.config"
-$dd_config = Get-Content $ddConfigFilename
-$dd_config | % { $_.Replace("<WebSrv>false</WebSrv>", "<WebSrv>true</WebSrv>") } | Set-Content $ddConfigFilename
 
 AddToStatus "Installing Update Service Server"
 Install-GocPackage -Id 'go-current-server'

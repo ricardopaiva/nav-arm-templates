@@ -189,6 +189,7 @@ $setupVmScript = "c:\demo\SetupVm.ps1"
 $setupPrerequirements = "c:\demo\SetupPrerequirements.ps1"
 $setupHybridCloudServer = "c:\demo\SetupHybridCloudServer.ps1"
 $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
+$setupDataDirectorConfig = "c:\demo\SetupDataDirectorConfig.ps1"
 $setupSSMS = "c:\demo\SetupSSMS.ps1"
 
 if ($vmAdminUsername -ne $navAdminUsername) {
@@ -209,6 +210,7 @@ Download-File -sourceUrl "$($scriptPath)SetupStart.ps1"        -destinationFile 
 Download-File -sourceUrl "$($scriptPath)SetupPrerequirements.ps1" -destinationFile $setupPrerequirements
 Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServer.ps1" -destinationFile $setupHybridCloudServer
 Download-File -sourceUrl "$($scriptPath)SetupHybridCloudServerFinal.ps1" -destinationFile $setupHybridCloudServerFinal
+Download-File -sourceUrl "$($scriptPath)SetupDataDirectorConfig.ps1" -destinationFile $setupDataDirectorConfig
 Download-File -sourceUrl "$($scriptPath)SetupSSMS.ps1" -destinationFile $setupSSMS
 
 if ($beforeContainerSetupScriptUrl) {
