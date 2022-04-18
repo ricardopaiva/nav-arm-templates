@@ -15,38 +15,44 @@ $dd_config | % { $_.Replace("<WebSrv>false</WebSrv>", "<WebSrv>true</WebSrv>") }
 
 $xml = [xml](get-content $ddConfigFilename)
 
-[xml]$newNode = @"
-<Program Port="8">
-<Exec>DDDatabaseWS.exe</Exec>
-<Desc>Web Service Program</Desc>
-<Host>$($env:Computername)</Host>
-<Type>WebService</Type>
-<ExecBy>1</ExecBy>
-<Router>2</Router>
-<Debug>0</Debug>
-<Param>
-  <NavPath>C:\Program Files (x86)\LS Retail\Data Director 3\cfront</NavPath>
-  <DecFix>F05</DecFix>
-  <RepChr></RepChr>
-  <IsoLevel>ReadCommitted</IsoLevel>
-  <ConTimeOut>1</ConTimeOut>
-  <FOBTimeOut>10</FOBTimeOut>
-  <SQLTimeOut>0</SQLTimeOut>
-  <ThrTimeOut>60</ThrTimeOut>
-  <WSBatchSize>100</WSBatchSize>
-  <WSTimeout>10</WSTimeout>
-  <TSTimeOut>10</TSTimeOut>
-  <Extra>true</Extra>
-  <BigDec>false</BigDec>
-  <SUpd>false</SUpd>
-  <UseTrunc>false</UseTrunc>
-  <NavCU>99001483</NavCU>
-</Param>
-</Program>
+if ($null -eq $xml.SelectSingleNode('//DDConfig/AppConfig/Program[@Port="8"]')) {
+  AddToStatus "Adding Web Service related configuration to Data Director configuration file."
+
+  [xml]$newNode = @"
+  <Program Port="8">
+  <Exec>DDDatabaseWS.exe</Exec>
+  <Desc>Web Service Program</Desc>
+  <Host>$($env:Computername)</Host>
+  <Type>WebService</Type>
+  <ExecBy>1</ExecBy>
+  <Router>2</Router>
+  <Debug>0</Debug>
+  <Param>
+    <NavPath>C:\Program Files (x86)\LS Retail\Data Director 3\cfront</NavPath>
+    <DecFix>F05</DecFix>
+    <RepChr></RepChr>
+    <IsoLevel>ReadCommitted</IsoLevel>
+    <ConTimeOut>1</ConTimeOut>
+    <FOBTimeOut>10</FOBTimeOut>
+    <SQLTimeOut>0</SQLTimeOut>
+    <ThrTimeOut>60</ThrTimeOut>
+    <WSBatchSize>100</WSBatchSize>
+    <WSTimeout>10</WSTimeout>
+    <TSTimeOut>10</TSTimeOut>
+    <Extra>true</Extra>
+    <BigDec>false</BigDec>
+    <SUpd>false</SUpd>
+    <UseTrunc>false</UseTrunc>
+    <NavCU>99001483</NavCU>
+  </Param>
+  </Program>
 "@
 
-$xml.DDConfig.AppConfig.InsertAfter($xml.ImportNode($newNode.Program, $true), $xml.DDConfig.AppConfig.LastChild) | out-null
-$xml.Save($ddConfigFilename)
+  $xml.DDConfig.AppConfig.InsertAfter($xml.ImportNode($newNode.Program, $true), $xml.DDConfig.AppConfig.LastChild) | out-null
+  $xml.Save($ddConfigFilename)
+}
+
+Restart-Service -Force 'DDService'
 
 AddToStatus "Setting up Full Control permissions to the Data Director folder"
 
@@ -58,7 +64,7 @@ Set-Acl $DDFolder $Acl
 
 AddToStatus "Adding a new SQL user for DD usage"
 
-# TODO: Add as a parameter
+# TODO: Add as a parameter (Only for the password but keep the username hardcoded)
 $sqlDDUser = 'DataDirector'
 $sqlDDPassword = 'DV4#fGnZ'
 
