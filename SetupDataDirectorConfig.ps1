@@ -7,6 +7,44 @@ if (!(Test-Path function:AddToStatus)) {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
+AddToStatus "Loading the Data Director license"
+
+Import-Module Az.Storage
+
+$licenseFileName = 'license.lic'
+$storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
+
+$ListDDLicenseFileHT = @{
+  Blob        = $licenseFileName
+  Container   = $StorageContainerName
+  Context     = $storageAccountContext
+}
+
+try
+{   
+    Get-AzStorageBlob @ListDDLicenseFileHT -ErrorAction Stop
+
+    $LicenseFileSourcePath = "c:\demo\license.lic"
+    $LicenseFileDestinationPath = "C:\ProgramData\LS Retail\Data Director\license.lic"
+    
+    $DownloadDDLicenseFileHT = @{
+      Blob        = $licenseFileName
+      Container   = $StorageContainerName
+      Destination = $LicenseFileSourcePath
+      Context     = $storageAccountContext
+  }
+  Get-AzStorageBlobContent @DownloadDDLicenseFileHT -Force
+  Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+}
+catch [Microsoft.WindowsAzure.Commands.Storage.Common.ResourceNotFoundException]
+{
+  AddToStatus "Data Director license file not found. Using test license."
+}
+catch
+{
+  AddToStatus $Error[0].Exception
+}
+
 AddToStatus "Enabling Web Services in LS Data Director"
 $ddConfigFilename = "C:\ProgramData\LS Retail\Data Director\lsretail.config"
 $dd_config = Get-Content $ddConfigFilename
