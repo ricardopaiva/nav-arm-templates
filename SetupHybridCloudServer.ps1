@@ -7,6 +7,30 @@ if (!(Test-Path function:AddToStatus)) {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
+
+
+AddToStatus "TEMP 2: Importing Az.Storage module"
+Import-Module Az.Storage
+
+$licenseFileName = 'DEV.flf'
+$storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
+
+$LicenseFileSourcePath = "c:\demo\license.flf"
+#$LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+
+$DownloadBCLicenseFileHT = @{
+    Blob        = $licenseFileName
+    Container   = $StorageContainerName
+    Destination = $LicenseFileSourcePath
+    Context     = $storageAccountContext
+}
+AddToStatus "$(Get-Date)"
+Get-AzStorageBlobContent @DownloadBCLicenseFileHT
+AddToStatus "TEMP 2: License downloaded"
+#Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+
+
+
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
 $Filename = "$Folder\ls-central-latest.exe"
 New-Item $Folder -itemtype directory -ErrorAction ignore | Out-Null
@@ -107,10 +131,10 @@ else {
         Context     = $storageAccountContext
     }
     AddToStatus "TEMP: Sleeping for 5 seconds"
-    AddToStatus "TEMP: Sleeping for 5 seconds"
     Start-Sleep -Seconds 5
     AddToStatus "$(Get-Date)"
     Get-AzStorageBlobContent @DownloadBCLicenseFileHT
+    AddToStatus "TEMP: License downloaded"
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
 # else {
