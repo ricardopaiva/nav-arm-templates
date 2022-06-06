@@ -83,7 +83,7 @@ ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Proje
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
 
-AddToStatus "Loading the license"
+AddToStatus "Loading the Business Central license"
 if ($licenseFileUri) {
     $LicenseFileSourcePath = "c:\demo\license.flf"
     $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
@@ -91,6 +91,7 @@ if ($licenseFileUri) {
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
 else {
+    AddToStatus "TEMP: Importing Az.Storage module"
     Import-Module Az.Storage
 
     $licenseFileName = 'DEV.flf'
@@ -105,6 +106,10 @@ else {
         Destination = $LicenseFileSourcePath
         Context     = $storageAccountContext
     }
+    AddToStatus "TEMP: Sleeping for 5 seconds"
+    AddToStatus "TEMP: Sleeping for 5 seconds"
+    Start-Sleep -Seconds 5
+    AddToStatus "${Get-Date}"
     Get-AzStorageBlobContent @DownloadBCLicenseFileHT
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
