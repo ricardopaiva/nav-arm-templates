@@ -62,6 +62,27 @@ if (-not (Get-InstalledModule SqlServer -ErrorAction SilentlyContinue)) {
 $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
 $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
 
+
+AddToStatus "Loading the license (TEMP)"
+Import-Module Az.Storage
+
+$licenseFileName = 'DEV.flf'
+$storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
+
+$LicenseFileSourcePath = "c:\demo\license.flf"
+# $LicenseFileDestinationPath = (Join-Path 'C:/LS Retail/Hybrid Cloud Components/Files/License')
+
+$DownloadBCLicenseFileHT = @{
+    Blob        = $licenseFileName
+    Container   = $StorageContainerName
+    Destination = $LicenseFileSourcePath
+    Context     = $storageAccountContext
+}
+Get-AzStorageBlobContent @DownloadBCLicenseFileHT
+# Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+AddToStatus "Loading the license (TEMP) - End"
+
+
 if ($WindowsInstallationType -eq "Server") {
 
     if (Get-ScheduledTask -TaskName SetupVm -ErrorAction Ignore) {
