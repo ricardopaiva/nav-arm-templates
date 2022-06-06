@@ -109,7 +109,7 @@ else {
     AddToStatus "TEMP: Sleeping for 5 seconds"
     AddToStatus "TEMP: Sleeping for 5 seconds"
     Start-Sleep -Seconds 5
-    AddToStatus "${Get-Date}"
+    AddToStatus "$(Get-Date)"
     Get-AzStorageBlobContent @DownloadBCLicenseFileHT
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
