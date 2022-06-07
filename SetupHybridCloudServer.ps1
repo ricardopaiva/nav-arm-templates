@@ -115,7 +115,6 @@ if ($licenseFileUri) {
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
 else {
-    AddToStatus "TEMP: Importing Az.Storage module"
     Import-Module Az.Storage
 
     $licenseFileName = 'DEV.flf'
@@ -130,9 +129,7 @@ else {
         Destination = $LicenseFileSourcePath
         Context     = $storageAccountContext
     }
-    AddToStatus "TEMP: Sleeping for 5 seconds"
-    Start-Sleep -Seconds 5
-    AddToStatus "$(Get-Date)"
+    AddToStatus "TEMP: Will download BC license file"
     Get-AzStorageBlobContent @DownloadBCLicenseFileHT
     AddToStatus "TEMP: License downloaded"
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
