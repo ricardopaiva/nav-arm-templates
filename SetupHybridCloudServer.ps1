@@ -152,15 +152,15 @@ Register-ScheduledTask -TaskName "FinishHybridSetup" `
                        -User $vmAdminUsername `
                        -Password $plainPassword | Out-Null
 
-# Will run after the start on the SetupVm.ps1
-# AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
-
 AddToStatus "Creating the POS Master and POS bundle"
 & .\NewBundlePackage.ps1 -Import
 
-AddToStatus "After the restart, login to the virtual machine and run the $setupHybridCloudServerFinal script"
-
 # AddToStatus "Installing the POS Master"
 # & .\UpdatePosMaster.ps1
+
+# Will run after the start on the SetupVm.ps1
+AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
+
+# AddToStatus "After the restart, login to the virtual machine and run the $setupHybridCloudServerFinal script"
 
 shutdown -r -t 30
