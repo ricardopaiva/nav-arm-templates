@@ -7,29 +7,34 @@ if (!(Test-Path function:AddToStatus)) {
 
 . (Join-Path $PSScriptRoot "settings.ps1")
 
-
-
-AddToStatus "TEMP 2: Importing Az.Storage module"
-Import-Module Az.Storage
-
-$licenseFileName = 'DEV.flf'
-$storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
-
-$LicenseFileSourcePath = "c:\demo\license.flf"
-#$LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
-
-$DownloadBCLicenseFileHT = @{
-    Blob        = $licenseFileName
-    Container   = $StorageContainerName
-    Destination = $LicenseFileSourcePath
-    Context     = $storageAccountContext
+AddToStatus "Downloading the Business Central license"
+if ($licenseFileUri) {
+    $LicenseFileSourcePath = "c:\demo\license.flf"
+    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+    Download-File -sourceUrl $licensefileuri -destinationFile $LicenseFileSourcePath
+    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
-AddToStatus "$(Get-Date)"
-Get-AzStorageBlobContent @DownloadBCLicenseFileHT
-AddToStatus "TEMP 2: License downloaded"
-#Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+else {
+    Import-Module Az.Storage
 
+    $licenseFileName = 'DEV.flf'
+    $storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
 
+    $LicenseFileSourcePath = "c:\demo\license.flf"
+    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+
+    $DownloadBCLicenseFileHT = @{
+        Blob        = $licenseFileName
+        Container   = $StorageContainerName
+        Destination = $LicenseFileSourcePath
+        Context     = $storageAccountContext
+    }
+    Get-AzStorageBlobContent @DownloadBCLicenseFileHT
+    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+}
+# else {
+#     throw "License file not found at: ${licenseFileUri}"
+# }
 
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
 $Filename = "$Folder\ls-central-latest.exe"
@@ -106,37 +111,6 @@ ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Proje
 
 AddToStatus "Installing Hybrid Cloud Components"
 Set-Location $HCCProjectDirectory
-
-AddToStatus "Loading the Business Central license"
-if ($licenseFileUri) {
-    $LicenseFileSourcePath = "c:\demo\license.flf"
-    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
-    Download-File -sourceUrl $licensefileuri -destinationFile $LicenseFileSourcePath
-    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
-}
-else {
-    Import-Module Az.Storage
-
-    $licenseFileName = 'DEV.flf'
-    $storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
-
-    $LicenseFileSourcePath = "c:\demo\license.flf"
-    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
-
-    $DownloadBCLicenseFileHT = @{
-        Blob        = $licenseFileName
-        Container   = $StorageContainerName
-        Destination = $LicenseFileSourcePath
-        Context     = $storageAccountContext
-    }
-    AddToStatus "TEMP: Will download BC license file"
-    Get-AzStorageBlobContent @DownloadBCLicenseFileHT
-    AddToStatus "TEMP: License downloaded"
-    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
-}
-# else {
-#     throw "License file not found at: ${licenseFileUri}"
-# }
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
