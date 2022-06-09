@@ -153,8 +153,8 @@ $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoi
 #                        -User $vmAdminUsername `
 #                        -Password $plainPassword | Out-Null
 
-# $principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
-$principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
+$principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
+# $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
 
 $definition = New-ScheduledTask -Action $startupAction -Principal $principal -Trigger $startupTrigger -Settings $settings -Description "Run $($taskName) at startup"
 Register-ScheduledTask -TaskName $taskName -InputObject $definition
