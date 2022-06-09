@@ -144,13 +144,27 @@ $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-N
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-Register-ScheduledTask -TaskName "FinishHybridSetup" `
-                       -Action $startupAction `
-                       -Trigger $startupTrigger `
-                       -Settings $settings `
-                       -RunLevel "Highest" `
-                       -User $vmAdminUsername `
-                       -Password $plainPassword | Out-Null
+# Register-ScheduledTask -TaskName "FinishHybridSetup" `
+#                        -Action $startupAction `
+#                        -Trigger $startupTrigger `
+#                        -Settings $settings `
+#                        -RunLevel "Highest" `
+#                        -User $vmAdminUsername `
+#                        -Password $plainPassword | Out-Null
+
+$principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
+$definition = New-ScheduledTask -Action $startupTrigger -Principal $principal -Trigger $startupTrigger -Settings $settings -Description "Run $($taskName) at startup"
+Register-ScheduledTask -TaskName $taskName -InputObject $definition
+
+$task = Get-ScheduledTask -TaskName "FinishHybridSetup" -ErrorAction SilentlyContinue
+if ($task -ne $null)
+{
+    Write-Output "Created scheduled task: '$($task.ToString())'."
+}
+else
+{
+    Write-Output "Created scheduled task: FAILED."
+}
 
 AddToStatus "Creating the POS Master and POS bundle"
 & .\NewBundlePackage.ps1 -Import
