@@ -140,11 +140,12 @@ $setupHybridCloudServerFinal = "c:\demo\SetupHybridCloudServerFinal.ps1"
 $securePassword = ConvertTo-SecureString -String $adminPassword -Key $passwordKey
 $plainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword))
 
+$taskName = 'FinishHybridSetup'
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupHybridCloudServerFinal"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RunOnlyIfNetworkAvailable -DontStopOnIdleEnd
-# Register-ScheduledTask -TaskName "FinishHybridSetup" `
+# Register-ScheduledTask -TaskName $taskName `
 #                        -Action $startupAction `
 #                        -Trigger $startupTrigger `
 #                        -Settings $settings `
@@ -152,13 +153,14 @@ $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoi
 #                        -User $vmAdminUsername `
 #                        -Password $plainPassword | Out-Null
 
-$taskName = 'FinishHybridSetup'
-$principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
+# $principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
+$principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
+
 $definition = New-ScheduledTask -Action $startupAction -Principal $principal -Trigger $startupTrigger -Settings $settings -Description "Run $($taskName) at startup"
 Register-ScheduledTask -TaskName $taskName -InputObject $definition
 
 $task = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
-if ($task -ne $null)
+if ($null -ne $task)
 {
     Write-Output "Created scheduled task: '$($task.ToString())'."
 }
