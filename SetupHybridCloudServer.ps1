@@ -153,7 +153,7 @@ $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoi
 #                        -Password $plainPassword | Out-Null
 
 $principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
-$definition = New-ScheduledTask -Action $startupTrigger -Principal $principal -Trigger $startupTrigger -Settings $settings -Description "Run $($taskName) at startup"
+$definition = New-ScheduledTask -Action $startupAction -Principal $principal -Trigger $startupTrigger -Settings $settings -Description "Run $($taskName) at startup"
 Register-ScheduledTask -TaskName $taskName -InputObject $definition
 
 $task = Get-ScheduledTask -TaskName "FinishHybridSetup" -ErrorAction SilentlyContinue
