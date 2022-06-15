@@ -78,6 +78,7 @@ Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 $ProjectJson = Get-Content -Path (Join-Path $HCCProjectDirectory 'Project.json') | ConvertFrom-Json
 $ProjectJson.WsPassword = $HCSWebServicesPassword
+$ProjectJson.SourceGoCurrentServer = "gc.lsretail.com"
 ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Project.json')
 
 AddToStatus "Installing Hybrid Cloud Components"
