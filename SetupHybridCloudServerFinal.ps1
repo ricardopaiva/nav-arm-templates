@@ -26,7 +26,9 @@ if (Get-ScheduledTask -TaskName FinishHybridSetup -ErrorAction Ignore) {
 # if (!($imageName)) {
 #    Remove-Item -path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
 # }
-AddToStatus "Installation finished successfully. Will restart now."
+AddToStatus "Installation finished successfully."
+AddToStatus "The hybrid cloud setup is now finished."
+AddToStatus "Will restart now."
 # Move-Item -path "c:\demo\status.txt" "c:\demo\status-archive.txt" -Force -ErrorAction SilentlyContinue
 
 shutdown -r -t 30
