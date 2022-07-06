@@ -78,8 +78,8 @@ Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 $ProjectJson = Get-Content -Path (Join-Path $HCCProjectDirectory 'Project.json') | ConvertFrom-Json
 $ProjectJson.WsPassword = $HCSWebServicesPassword
-$ProjectJson.SourceGoCurrentServer = "gc.lsretail.com"
-$ProjectJson.SourceGoCurrentPort = "16550"
+$ProjectJson.SourceGoCurrentServer = "gc.lsretail.com"  # Internal GC server - To be removed on Production.
+$ProjectJson.SourceGoCurrentPort = "16550"  # Internal GC server - To be removed on Production.
 ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Project.json')
 
 AddToStatus "Installing Hybrid Cloud Components"
