@@ -61,8 +61,6 @@ $ComputerInfo = Get-ComputerInfo
 $WindowsInstallationType = $ComputerInfo.WindowsInstallationType
 $WindowsProductName = $ComputerInfo.WindowsProductName
 
-AddToStatus "Installation Type: $WindowsInstallationType"
-
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Ssl3 -bor [System.Net.SecurityProtocolType]::Tls -bor [System.Net.SecurityProtocolType]::Ssl3 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls12
 
 $settingsScript = "c:\demo\settings.ps1"
@@ -214,17 +212,17 @@ Download-File -sourceUrl "$($scriptPath)SetupDataDirectorConfig.ps1" -destinatio
 Download-File -sourceUrl "$($scriptPath)SetupSSMS.ps1" -destinationFile $setupSSMS
 
 if ($beforeContainerSetupScriptUrl) {
-    if ($beforeContainerSetupScriptUrl -notlike "https://*" -and $beforeContainerSetupScriptUrl -notlike "http://*") {
-        $beforeContainerSetupScriptUrl = "$($scriptPath)$beforeContainerSetupScriptUrl"
-    }
+    # if ($beforeContainerSetupScriptUrl -notlike "https://*" -and $beforeContainerSetupScriptUrl -notlike "http://*") {
+        # $beforeContainerSetupScriptUrl = "$($scriptPath)$beforeContainerSetupScriptUrl"
+    # }
     $beforeContainerSetupScript = "c:\demo\BeforeContainerSetupScript.ps1"
     Download-File -sourceUrl $beforeContainerSetupScriptUrl -destinationFile $beforeContainerSetupScript
 }
 
 if ($finalSetupScriptUrl) {
-    if ($finalSetupScriptUrl -notlike "https://*" -and $finalSetupScriptUrl -notlike "http://*") {
-        $finalSetupScriptUrl = "$($scriptPath)$finalSetupScriptUrl"
-    }
+    # if ($finalSetupScriptUrl -notlike "https://*" -and $finalSetupScriptUrl -notlike "http://*") {
+        # $finalSetupScriptUrl = "$($scriptPath)$finalSetupScriptUrl"
+    # }
     $finalSetupScript = "c:\demo\FinalSetupScript.ps1"
     Download-File -sourceUrl $finalSetupScriptUrl -destinationFile $finalSetupScript
 }

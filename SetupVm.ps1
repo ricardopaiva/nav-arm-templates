@@ -58,11 +58,13 @@ if (Test-Path $beforeContainerSetupScript) {
     . $beforeContainerSetupScript
 }
 
-$finalSetupScript = (Join-Path $PSScriptRoot "FinalSetupScript.ps1")
-if (Test-Path $finalSetupScript) {
-    AddToStatus "Running FinalSetupScript"
-    . $finalSetupScript
-}
+# TO BE REVIEWED. FinalSetupScript.ps1 that supposedly matches SetupHybridCloudServerFinal.ps1 should not be executed here and it's going to be executed inside SetupHybridCloudServer.ps1
+
+# $finalSetupScript = (Join-Path $PSScriptRoot "FinalSetupScript.ps1")
+# if (Test-Path $finalSetupScript) {
+    # AddToStatus "Running FinalSetupScript"
+    # . $finalSetupScript
+# }
 
 if (Get-ScheduledTask -TaskName SetupStart -ErrorAction Ignore) {
     schtasks /DELETE /TN SetupStart /F | Out-Null

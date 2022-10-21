@@ -17,10 +17,10 @@ if (!(Test-Path $Filename)) {
     $WebClient.DownloadFile("https://portal.lsretail.com/media/uiucpd5g/ls-central-latest.exe", $Filename)
 }
 
-AddToStatus "Installing GoCurrent Client module"
+AddToStatus "Installing Update Service Client module"
 . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
 if ($LASTEXITCODE -ne 0) { 
-    AddToStatus -color red "Error installing GoCurrent Client module: $($LASTEXITCODE)"
+    AddToStatus -color red "Error installing Update Service Client module: $($LASTEXITCODE)"
     return
 }
 
@@ -78,8 +78,6 @@ Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 $ProjectJson = Get-Content -Path (Join-Path $HCCProjectDirectory 'Project.json') | ConvertFrom-Json
 $ProjectJson.WsPassword = $HCSWebServicesPassword
-$ProjectJson.SourceGoCurrentServer = "gc.lsretail.com"  # Internal GC server - To be removed on Production.
-$ProjectJson.SourceGoCurrentPort = "16550"  # Internal GC server - To be removed on Production.
 ConvertTo-Json $ProjectJson | Set-Content (Join-Path $HCCProjectDirectory 'Project.json')
 
 AddToStatus "Installing Hybrid Cloud Components"
