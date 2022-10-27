@@ -24,6 +24,8 @@ AddToStatus "Installing Update Service Client module"
 #     return
 # }
 
+$ErrorActionPreference = "Continue"
+
 try { 
     . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
 }
@@ -31,6 +33,9 @@ catch {
     AddToStatus "Error installing Update Service Client module: $($LASTEXITCODE). Retrying..."
     . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
 }
+
+AddToStatus "Good!"
+$ErrorActionPreference = "Stop"
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 Install-GocPackage -Id 'go-current-client'
