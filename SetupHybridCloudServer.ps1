@@ -38,7 +38,10 @@ AddToStatus "Good!"
 $ErrorActionPreference = "Stop"
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
+AddToStatus "Will install go-current-client"
+Start-Sleep -Seconds 5
 Install-GocPackage -Id 'go-current-client'
+AddToStatus "Did install go-current-client"
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
 AddToStatus "Installing SQL Server Express (this might take a while)"
