@@ -18,29 +18,26 @@ if (!(Test-Path $Filename)) {
 }
 
 AddToStatus "Installing Update Service Client module"
-# . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
-# if ($LASTEXITCODE -ne 0) { 
-#     AddToStatus -color red "Error installing Update Service Client module: $($LASTEXITCODE)"
-#     return
-# }
-
-$ErrorActionPreference = "Continue"
-
-try { 
-    . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+. "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+if ($LASTEXITCODE -ne 0) { 
+    AddToStatus -color red "Error installing Update Service Client module: $($LASTEXITCODE)"
+    return
 }
-catch {
-    AddToStatus "Error installing Update Service Client module: $($LASTEXITCODE). Retrying..."
-    . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
-}
-
-AddToStatus "Good!"
-$ErrorActionPreference = "Stop"
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 AddToStatus "Will install go-current-client"
 Start-Sleep -Seconds 5
-Install-GocPackage -Id 'go-current-client'
+# Install-GocPackage -Id 'go-current-client'
+
+try { 
+    Install-GocPackage -Id 'go-current-client'
+}
+catch {
+    AddToStatus "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
+    Install-GocPackage -Id 'go-current-client'
+}
+
+
 AddToStatus "Did install go-current-client"
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
