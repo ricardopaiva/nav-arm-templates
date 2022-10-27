@@ -18,20 +18,18 @@ if (!(Test-Path $Filename)) {
 }
 
 AddToStatus "Installing Update Service Client module"
-. "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
-if ($LASTEXITCODE -ne 0) { 
-    # AddToStatus -color red "Error installing Update Service Client module: $($LASTEXITCODE)"
-    # return
+# . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+# if ($LASTEXITCODE -ne 0) { 
+#     AddToStatus -color red "Error installing Update Service Client module: $($LASTEXITCODE)"
+#     return
+# }
 
-    # Workaround - When using this installer in a different Azure Region (Asia or US), it seems like the first time the installer is run, it fixes the Update Service Server guid in the Servers.json
-    # file but the guid is not properly refresh and the installation fails.
-    # Now if we get an error, we try the installation again.
+try { 
+    . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+}
+catch {
     AddToStatus "Error installing Update Service Client module: $($LASTEXITCODE). Retrying..."
     . "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
-    if ($LASTEXITCODE -ne 0) { 
-        AddToStatus -color red "Error installing Update Service Client module: $($LASTEXITCODE)"
-        return
-    }
 }
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
