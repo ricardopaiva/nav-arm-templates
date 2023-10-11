@@ -2,7 +2,7 @@ Import-Module (Join-Path $PSScriptRoot "Helpers.ps1") -Force
 
 # Install Choco
 AddToSTatus "Install Choco"
-$env:chocolateyVersion = '1.4.0.0'
+$env:chocolateyVersion = '1.4.0'
 Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 choco feature enable -n allowGlobalConfirmation
 
