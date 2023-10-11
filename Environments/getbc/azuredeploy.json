@@ -16,20 +16,6 @@
                 "Description": "The name for the new or existing storage account where the license files will be stored"
             }
         },
-        // "virtualNetworkName": {
-        //     "type": "string",
-        //     "defaultValue": "virtualnetwork",
-        //     "metadata": {
-        //         "Description": "TODO: Review this parameter"
-        //     }
-        // },
-        // "networkSecurityGroupName": {
-        //     "type": "string",
-        //     "defaultValue": "",
-        //     "metadata": {
-        //         "Description": "TODO: Review this parameter"
-        //     }
-        // },
         "networkInterfaceName": {
             "type": "string",
             "defaultValue": "",
@@ -51,6 +37,13 @@
             "defaultValue": "false",
             "metadata": {
                 "Description": "Select if boot diagnostics should be enabled"
+            }
+        },
+        "enableTranscription": {
+            "type": "bool",
+            "defaultValue": "false",
+            "metadata": {
+                "Description": "Select if Powershell Transcription should be enabled"
             }
         },
         "TimezoneId": {
@@ -177,13 +170,6 @@
                 "Description": "Public DNS Name (CNAME record pointing to your VM). A # in the name will be replaced by the VM number. If you do not specify a public DNS name, you will get a Self Signed Certificate."
             }
         },
-        "FinalSetupScriptUrl": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "Description": "Optional: Specify a Url to a PowerShell script that should be executed on the VM to do the final setup of the VM."
-            }
-        },
         "RunWindowsUpdate": {
             "type": "string",
             "defaultValue": "No",
@@ -195,7 +181,6 @@
         "BCLocalization": {
             "type": "string",
             "defaultValue": "W1",
-            // "allowedValues": ["W1", "IS", "US", ...],
             "metadata": {
                 "Description": "Specify the localization code matching the SaaS instance."
             }
@@ -242,7 +227,6 @@
         "PublicDnsName": "[parameters('PublicDnsName')]",
         "Multitenant": "[parameters('Multitenant')]",
         "ClickOnce": "No",
-        "FinalSetupScriptUrl": "[parameters('FinalSetupScriptUrl')]",
         "RunWindowsUpdate": "[parameters('RunWindowsUpdate')]",
         "style": "demo",
         "OperatingSystem": "[parameters('OperatingSystem')]",
@@ -251,21 +235,13 @@
         "imageSku": "[if(equals(variables('OperatingSystem'),'Windows 10'),'rs5-pro',if(equals(variables('OperatingSystem'),'Windows Server 2016'),'2016-Datacenter',if(equals(variables('OperatingSystem'),'Windows Server 2019'),'2019-Datacenter','2019-Datacenter-with-containers')))]",
         "storageAccountType": "[parameters('StorageAccountType')]",
         "OSDiskName": "[concat(variables('vmName'),'_osdisk')]",
-        //"publicIPAddressName": "[concat(variables('vmName'), '_pip')]",
         "publicIPAddressName": "[parameters('publicIPAddressName')]",
         "storageAccountName": "[parameters('storageAccountName')]",
-        // "networkSecurityGroupName": "networksecuritygroup",
-        // "networkSecurityGroupName": "[parameters('networkSecurityGroupName')]",
         "dnsName": "[tolower(variables('vmName'))]",
         "addressPrefix": "10.0.0.0/16",
         "subnetName": "Subnet",
         "subnetPrefix": "10.0.0.0/24",
-        // "virtualNetworkName": "[parameters('virtualNetworkName')]",
         "server1Name": "[tolower(variables('vmName'))]",
-        // "nic1Name": "[concat(variables('vmName'),'_nic')]",
-        // "nic1Name": "[parameters('networkInterfaceName')]",
-        // "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-        // "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
         "ScriptCommandToExecute": "powershell.exe -executionpolicy unrestricted -file ",
         "BCLocalization": "[parameters('BCLocalization')]",
         "HCCProjectDirectory": "[parameters('HCCProjectDirectory')]",
@@ -273,7 +249,8 @@
         "HCSWebServicesUsername": "[parameters('HCSWebServicesUsername')]",
         "HCSWebServicesPassword": "[parameters('HCSWebServicesPassword')]",
         "StorageContainerName": "[parameters('StorageContainerName')]",
-        "StorageSasToken": "[parameters('StorageSasToken')]"
+        "StorageSasToken": "[parameters('StorageSasToken')]",
+        "enableTranscription": "[parameters('enableTranscription')]"
     },
     "resources": [{
             "apiVersion": "2019-04-01",
@@ -288,53 +265,6 @@
                 "supportsHttpsTrafficOnly": true
             }
         },
-        // {
-        //     "apiVersion": "2015-05-01-preview",
-        //     "type": "Microsoft.Network/publicIPAddresses",
-        //     "name": "[variables('publicIPAddressName')]",
-        //     "location": "[resourceGroup().location]",
-        //     "properties": {
-        //         "publicIPAllocationMethod": "Dynamic",
-        //         "dnsSettings": {
-        //             "domainNameLabel": "[variables('dnsName')]"
-        //         }
-        //     }
-        // },
-        // {
-        //     "apiVersion": "2018-11-01",
-        //     "type": "Microsoft.Network/networkInterfaces",
-        //     "name": "[variables('nic1Name')]",
-        //     "location": "[resourceGroup().location]",
-        //     "dependsOn": [
-        //         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
-        //         // "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
-		// 		// "[concat('Microsoft.Network/networkSecurityGroups/',variables('networkSecurityGroupName'))]"
-        //         // "[resourceId('rg-common-devtest', 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-        //     ],
-        //     "properties": {
-        //         "networkSecurityGroup": {
-        //             // "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
-        //             "id": "[resourceId('rg-common-devtest', 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"  // TODO: REVIEW
-        //         },
-        //         "ipConfigurations": [
-        //             {
-        //                 "name": "ipconfig1",
-        //                 "properties": {
-        //                     "privateIPAllocationMethod": "Dynamic",
-        //                     "publicIPAddress": {
-        //                         "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-        //                     },
-        //                     "subnet": {
-        //                         // "id": "[variables('subnetRef')]"
-        //                         // "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetRef'))]"  // TODO: REVIEW
-        //                         // "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"  // TODO: REVIEW
-        //                         "id": "[concat(resourceId('rg-common-devtest', 'Microsoft.Network/virtualNetworks', 'vnet-ne-europe-devtest'),'/subnets/','Subnet')]"  // TODO: REVIEW
-        //                     }
-        //                 }
-        //             }
-        //         ]
-        //     }
-        // },
         {
             "apiVersion": "2018-10-01",
             "type": "Microsoft.Compute/virtualMachines",
@@ -379,7 +309,6 @@
                 },
                 "networkProfile": {
                     "networkInterfaces": [{
-                            //"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic1Name'))]"
                             "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('networkInterfaceName'))]"
                         }
                     ]
