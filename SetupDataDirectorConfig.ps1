@@ -1,47 +1,33 @@
-if (!(Test-Path function:AddToStatus)) {
-    function AddToStatus([string]$line, [string]$color = "Gray") {
-        ("<font color=""$color"">" + [DateTime]::Now.ToString([System.Globalization.DateTimeFormatInfo]::CurrentInfo.ShortDatePattern) + " " + [DateTime]::Now.ToString([System.Globalization.DateTimeFormatInfo]::CurrentInfo.ShortTimePattern.replace(":mm",":mm:ss")) + " $line</font>") | Add-Content -Path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
-        Write-Host -ForegroundColor $color $line 
-    }
+if ($enableTranscription) {
+    Enable-Transcription
 }
 
-. (Join-Path $PSScriptRoot "settings.ps1")
-
+AddToStatus -color Green "Current File: SetupDataDirectorConfig.ps1"
 AddToStatus "Loading the Data Director license"
-
-Import-Module Az.Storage
-
-$licenseFileName = 'license.lic'
-$storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
-
-$ListDDLicenseFileHT = @{
-  Blob        = $licenseFileName
-  Container   = $StorageContainerName
-  Context     = $storageAccountContext
-}
 
 try
 {   
-    Get-AzStorageBlob @ListDDLicenseFileHT -ErrorAction Stop
-
-    $LicenseFileSourcePath = "c:\demo\license.lic"
-    $LicenseFileDestinationPath = "C:\ProgramData\LS Retail\Data Director\license.lic"
-    
-    $DownloadDDLicenseFileHT = @{
-      Blob        = $licenseFileName
-      Container   = $StorageContainerName
-      Destination = $LicenseFileSourcePath
-      Context     = $storageAccountContext
-  }
-  Get-AzStorageBlobContent @DownloadDDLicenseFileHT -Force
+  $licenseFileName = 'license.lic'
+  $LicenseFileSourcePath = "c:\demo\license.lic"
+  $LicenseFileDestinationPath = "C:\ProgramData\LS Retail\Data Director\license.lic"
+  
+  $result = az storage blob download --file $LicenseFileSourcePath --name $licenseFileName --account-name $storageAccountName --container-name $storageContainerName --sas-token """$storageSasToken""" # --debug
   Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+
+  if (0 -ne $LASTEXITCODE) {
+    AddToStatus -color Red  "Error loading the Business Central license."
+    AddToStatus $Error[0].Exception
+    AddToStatus $($result[0])
+    return
+  }
 }
 catch [Microsoft.WindowsAzure.Commands.Storage.Common.ResourceNotFoundException]
 {
-  AddToStatus "Data Director license file not found. Using test license."
+  AddToStatus -color Red "Data Director license file not found. Using test license."
 }
 catch
 {
+  AddToStatus -color Red  "Error loading the Data Director license."
   AddToStatus $Error[0].Exception
 }
 
@@ -49,7 +35,6 @@ AddToStatus "Enabling Web Services in LS Data Director"
 $ddConfigFilename = "C:\ProgramData\LS Retail\Data Director\lsretail.config"
 $dd_config = Get-Content $ddConfigFilename
 $dd_config | % { $_.Replace("<WebSrv>false</WebSrv>", "<WebSrv>true</WebSrv>") } | Set-Content $ddConfigFilename
-
 
 $xml = [xml](get-content $ddConfigFilename)
 
@@ -103,12 +88,14 @@ Set-Acl $DDFolder $Acl
 AddToStatus "Adding a new SQL user for DD usage"
 
 # TODO: Add as a parameter (Only for the password but keep the username hardcoded)
-$sqlDDUser = 'DataDirector'
-$sqlDDPassword = 'DV4#fGnZ'
+$sqlDDUser = 'datadirector'
+$sqlDDPassword = 'jrPLY6zAXxgVyG2u'
+
+AddToStatus "Data Director user added with username: '$($sqlDDUser)'."
+AddToStatus "Data Director user added with password: '$($sqlDDPassword)'."
 
 # To create user the sa user
 Invoke-Sqlcmd -ServerInstance "$($env:Computername)\SQLEXPRESS" -Database "master" -Query "CREATE LOGIN [$($sqlDDUser)] WITH PASSWORD=N'$($sqlDDPassword)', CHECK_POLICY=OFF"
-#Invoke-Sqlcmd -ServerInstance "$($env:Computername)\SQLEXPRESS" -Database "master" -Query "CREATE USER [$($sqlDDUser)] FOR LOGIN [$($sqlDDUser)]"
 Invoke-Sqlcmd -ServerInstance "$($env:Computername)\SQLEXPRESS" -Database "GoCurrent" -Query "CREATE USER [$($sqlDDUser)] FOR LOGIN [$($sqlDDUser)]"
 Invoke-Sqlcmd -ServerInstance "$($env:Computername)\SQLEXPRESS" -Database "GoCurrent" -Query "ALTER ROLE [db_owner] ADD MEMBER [$($sqlDDUser)]"
 Invoke-Sqlcmd -ServerInstance "$($env:Computername)\SQLEXPRESS" -Database "POSMaster" -Query "CREATE USER [$($sqlDDUser)] FOR LOGIN [$($sqlDDUser)]"

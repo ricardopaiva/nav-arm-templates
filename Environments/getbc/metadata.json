@@ -2,6 +2,6 @@
     "itemDisplayName": "Microsoft Dynamics 365 Business Central",
     "description": "This template deploys an Azure VM with the LS Retail Hybrid Cloud Server components installed. Setup can be configured through parameters.",
     "summary": "",
-    "githubUsername": "",
+    "githubUsername": "ricardomoinhos",
     "dateUpdated": "2022-03-25"
   }

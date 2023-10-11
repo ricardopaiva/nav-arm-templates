@@ -1,7 +1,7 @@
 # usage initialize.ps1
 param
 (
-       [string] $templateLink              = "https://raw.githubusercontent.com/ricardopaiva/nav-arm-templates/master/navdeveloperpreview.json",
+       [string] $templateLink              = "https://raw.githubusercontent.com/lsretail/azure-hybrid-cloud-server-setup/master/Environments/getbc/azuredeploy.json",
        [string] $containerName             = "navserver",
        [string] $hostName                  = "",
        [string] $vmAdminUsername           = "vmadmin",
@@ -13,7 +13,6 @@ param
        [string] $licenseFileUri            = "",
        [string] $publicDnsName             = "",
 	   [string] $beforeContainerSetupScriptUrl = "",
-	   [string] $finalSetupScriptUrl       = "",
        [string] $style                     = "devpreview",
        [string] $RunWindowsUpdate          = "No",
        [string] $Multitenant               = "No",
@@ -25,7 +24,8 @@ param
        [string] $HCSWebServicesPassword    = "",
        [string] $StorageAccountName        = "",
        [string] $StorageContainerName      = "",
-       [string] $StorageSasToken           = ""
+       [string] $StorageSasToken           = "",
+       [string] $enableTranscription       = "No"
 )
 
 $verbosePreference = "SilentlyContinue"
@@ -43,6 +43,7 @@ function Get-VariableDeclaration([string]$name) {
 
 function AddToStatus([string]$line, [string]$color = "Gray") {
     ("<font color=""$color"">" + [DateTime]::Now.ToString([System.Globalization.DateTimeFormatInfo]::CurrentInfo.ShortDatePattern) + " " + [DateTime]::Now.ToString([System.Globalization.DateTimeFormatInfo]::CurrentInfo.ShortTimePattern.replace(":mm",":mm:ss")) + " $line</font>") | Add-Content -Path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
+    Write-Host -ForegroundColor $color $line 
 }
 
 function Download-File([string]$sourceUrl, [string]$destinationFile)
@@ -94,6 +95,7 @@ if (Test-Path $settingsScript) {
     Get-VariableDeclaration -name "StorageAccountName"     | Add-Content $settingsScript
     Get-VariableDeclaration -name "StorageContainerName"   | Add-Content $settingsScript
     Get-VariableDeclaration -name "StorageSasToken"        | Add-Content $settingsScript
+    Get-VariableDeclaration -name "enableTranscription"    | Add-Content $settingsScript
 
     $passwordKey = New-Object Byte[] 16
     [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($passwordKey)
@@ -120,8 +122,6 @@ if (Test-Path $settingsScript) {
 #   demo
 #
 
-$includeWindowsClient = $true
-
 if (Test-Path -Path "c:\DEMO\Status.txt" -PathType Leaf) {
     AddToStatus "VM already initialized."
     exit
@@ -136,6 +136,13 @@ AddToStatus "Running $WindowsProductName"
 AddToStatus "Initialize, user: $env:USERNAME"
 AddToStatus "TemplateLink: $templateLink"
 $scriptPath = $templateLink.SubString(0,$templateLink.LastIndexOf('/')+1)
+
+Download-File -sourceUrl "$($scriptPath)Helpers.ps1" -destinationFile "c:\demo\Helpers.ps1"
+. "c:\demo\Helpers.ps1"
+
+if ($enableTranscription) {
+    Enable-Transcription
+}
 
 $downloadFolder = "C:\DOWNLOAD"
 New-Item -Path $downloadFolder -ItemType Directory -ErrorAction Ignore | Out-Null
@@ -157,11 +164,15 @@ if ($WindowsInstallationType -eq "Server") {
     Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebServer,IIS-ASPNET45,WCF-HTTP-Activation,IIS-ManagementConsole,IIS-BasicAuthentication,IIS-HttpCompressionDynamic -All -NoRestart | Out-Null
 }
 
+# Get Version Script
+Download-File -sourceUrl "$($scriptPath)GetVersion.ps1"           -destinationFile "c:\demo\GetVersion.ps1"
+Download-File -sourceUrl "$($scriptPath)scriptVersion.txt"           -destinationFile "c:\demo\scriptVersion.txt"
+. "c:\demo\GetVersion.ps1"
+
 Remove-Item -Path "C:\inetpub\wwwroot\iisstart.*" -Force
 Download-File -sourceUrl "$($scriptPath)Default.aspx"            -destinationFile "C:\inetpub\wwwroot\default.aspx"
 Download-File -sourceUrl "$($scriptPath)status.aspx"             -destinationFile "C:\inetpub\wwwroot\status.aspx"
 Download-File -sourceUrl "$($scriptPath)line.png"                -destinationFile "C:\inetpub\wwwroot\line.png"
-Download-File -sourceUrl "$($scriptPath)Microsoft.png"           -destinationFile "C:\inetpub\wwwroot\Microsoft.png"
 Download-File -sourceUrl "$($scriptPath)web.config"              -destinationFile "C:\inetpub\wwwroot\web.config"
 
 $title = 'Dynamics Container Host'
@@ -219,14 +230,6 @@ if ($beforeContainerSetupScriptUrl) {
     Download-File -sourceUrl $beforeContainerSetupScriptUrl -destinationFile $beforeContainerSetupScript
 }
 
-if ($finalSetupScriptUrl) {
-    # if ($finalSetupScriptUrl -notlike "https://*" -and $finalSetupScriptUrl -notlike "http://*") {
-        # $finalSetupScriptUrl = "$($scriptPath)$finalSetupScriptUrl"
-    # }
-    $finalSetupScript = "c:\demo\FinalSetupScript.ps1"
-    Download-File -sourceUrl $finalSetupScriptUrl -destinationFile $finalSetupScript
-}
-
 $startupAction = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy UnRestricted -File $setupStartScript"
 $startupTrigger = New-ScheduledTaskTrigger -AtStartup
 $startupTrigger.Delay = "PT1M"
@@ -239,4 +242,4 @@ Register-ScheduledTask -TaskName "SetupStart" `
                        -User "NT AUTHORITY\SYSTEM" | Out-Null
 
 AddToStatus "Restarting computer and start Installation tasks"
-Shutdown -r -t 60
+Shutdown -r -t 30

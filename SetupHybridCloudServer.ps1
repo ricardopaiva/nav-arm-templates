@@ -1,11 +1,31 @@
-if (!(Test-Path function:AddToStatus)) {
-    function AddToStatus([string]$line, [string]$color = "Gray") {
-        ("<font color=""$color"">" + [DateTime]::Now.ToString([System.Globalization.DateTimeFormatInfo]::CurrentInfo.ShortDatePattern) + " " + [DateTime]::Now.ToString([System.Globalization.DateTimeFormatInfo]::CurrentInfo.ShortTimePattern.replace(":mm",":mm:ss")) + " $line</font>") | Add-Content -Path "c:\demo\status.txt" -Force -ErrorAction SilentlyContinue
-        Write-Host -ForegroundColor $color $line 
-    }
-}
+Import-Module (Join-Path $PSScriptRoot "Helpers.ps1") -Force
+
+AddToStatus -color Green "Current File: SetupHybridCloudServer.ps1"
 
 . (Join-Path $PSScriptRoot "settings.ps1")
+
+if (Get-ScheduledTask -TaskName StartHybridCloudServerSetup -ErrorAction Ignore) {
+    schtasks /DELETE /TN StartHybridCloudServerSetup /F | Out-Null
+}
+
+# Check for a valid Storage Token before moving forward
+try {
+    $result = az storage blob list --account-name $storageAccountName --container-name $storageContainerName --sas-token """$storageSasToken""" # --debug
+    if (0 -ne $LASTEXITCODE) {
+        AddToStatus -color Red "Please check your Storage Sas Token."
+        AddToStatus $Error[0].Exception.Message
+        AddToStatus $($result[0])
+        return
+    }
+
+    AddToStatus -color Green "Storage Sas Token seems to be valid."
+}
+catch
+{
+    AddToStatus -color Red "Please check your Storage Sas Token."
+    AddToStatus $Error[0].Exception.Message
+    return
+}
 
 $Folder = "C:\DOWNLOAD\HybridCloudServerComponents"
 $Filename = "$Folder\ls-central-latest.exe"
@@ -27,7 +47,6 @@ if ($LASTEXITCODE -ne 0) {
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 AddToStatus "Will install go-current-client"
 Start-Sleep -Seconds 5
-# Install-GocPackage -Id 'go-current-client'
 
 try { 
     Install-GocPackage -Id 'go-current-client'
@@ -37,7 +56,6 @@ catch {
     Install-GocPackage -Id 'go-current-client'
 }
 
-
 AddToStatus "Did install go-current-client"
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
@@ -45,7 +63,6 @@ AddToStatus "Installing SQL Server Express (this might take a while)"
 Install-GocPackage -Id 'sql-server-express'
 
 AddToStatus "Configuring the SQL Server authentication mode to mixed mode"
-#Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQLServer" -Name "LoginMode" -Value 2 -ErrorAction SilentlyContinue | Out-Null
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQLServer" -Name "LoginMode" -Value 2 | Out-Null
 Restart-Service -Force 'MSSQL$SQLEXPRESS'
 
@@ -106,26 +123,29 @@ if ($licenseFileUri) {
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
 else {
-    Import-Module Az.Storage
+    try
+    {   
+        $licenseFileName = 'DEV.flf'
+        $LicenseFileSourcePath = "c:\demo\license.flf"
+        $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
 
-    $licenseFileName = 'DEV.flf'
-    $storageAccountContext = New-AzStorageContext $StorageAccountName -SasToken $StorageSasToken
-
-    $LicenseFileSourcePath = "c:\demo\license.flf"
-    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
-
-    $DownloadBCLicenseFileHT = @{
-        Blob        = $licenseFileName
-        Container   = $StorageContainerName
-        Destination = $LicenseFileSourcePath
-        Context     = $storageAccountContext
+        $result = az storage blob download --file $LicenseFileSourcePath --name $licenseFileName --account-name $storageAccountName --container-name $storageContainerName --sas-token """$storageSasToken""" # --debug
+        Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+    
+        if (0 -ne $LASTEXITCODE) {
+            AddToStatus -color Red  "Error loading the Business Central license."
+            AddToStatus $Error[0].Exception
+            AddToStatus $($result[0])
+            return
+        }
     }
-    Get-AzStorageBlobContent @DownloadBCLicenseFileHT
-    Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
+    catch
+    {
+        AddToStatus -color Red  "Error loading the Business Central license."
+        AddToStatus $Error[0].Exception
+        return
+    }
 }
-# else {
-#     throw "License file not found at: ${licenseFileUri}"
-# }
 
 AddToStatus "Creating license package"
 & .\NewLicensePackage.ps1 -Import
@@ -166,12 +186,6 @@ Register-ScheduledTask -TaskName $taskName `
                        -User $vmAdminUsername `
                        -Password $plainPassword | Out-Null
 
-# $principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
-# $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
-
-# $definition = New-ScheduledTask -Action $startupAction -Principal $principal -Trigger $startupTrigger -Settings $settings -Description "Run $($taskName) at startup"
-# Register-ScheduledTask -TaskName $taskName -InputObject $definition
-
 $task = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
 if ($null -ne $task)
 {
@@ -185,12 +199,6 @@ else
 AddToStatus "Creating the POS Master and POS bundle"
 & .\NewBundlePackage.ps1 -Import
 
-# AddToStatus "Installing the POS Master"
-# & .\UpdatePosMaster.ps1
-
 # Will run after the start on the SetupVm.ps1
 AddToStatus "Will finish Hybrid Cloud Server setup after the restart"
-
-# AddToStatus "After the restart, login to the virtual machine and run the $setupHybridCloudServerFinal script"
-
 shutdown -r -t 30
