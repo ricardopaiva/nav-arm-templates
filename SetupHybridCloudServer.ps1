@@ -117,17 +117,17 @@ $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath",
 
 AddToStatus "Downloading the Business Central license"
 if ($licenseFileUri) {
-    $LicenseFileSourcePath = "c:\demo\license.flf"
-    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+    $LicenseFileSourcePath = "c:\demo\license.bclicense"
+    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files')
     Download-File -sourceUrl $licensefileuri -destinationFile $LicenseFileSourcePath
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
 else {
     try
     {   
-        $licenseFileName = 'DEV.flf'
-        $LicenseFileSourcePath = "c:\demo\license.flf"
-        $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
+        $licenseFileName = 'DEV.bclicense'
+        $LicenseFileSourcePath = "c:\demo\license.bclicense"
+        $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files')
 
         $result = az storage blob download --file $LicenseFileSourcePath --name $licenseFileName --account-name $storageAccountName --container-name $storageContainerName --sas-token """$storageSasToken""" # --debug
         Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
