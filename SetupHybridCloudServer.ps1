@@ -45,22 +45,26 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
-AddToStatus "Will install go-current-client"
 Start-Sleep -Seconds 5
 
-try { 
-    Install-GocPackage -Id 'go-current-client'
-}
-catch {
-    AddToStatus -color red "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
-    Install-GocPackage -Id 'go-current-client'
-}
+AddToStatus "Will install go-current-client"
+$totalRetries = 0
+do {
+    $Failed = $false
+    try {
+        Install-UscPackage -Id 'go-current-client'
+    } catch { 
+        $totalRetries += 1
+        AddToStatus -color red "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
+        $Failed = $true
+    }
+} while ($Failed) or ($totalRetries -lt 3) # or ($null -eq $LASTEXITCODE)
 
 AddToStatus "Did install go-current-client"
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
 AddToStatus "Installing SQL Server Express (this might take a while)"
-Install-GocPackage -Id 'sql-server-express'
+Install-UscPackage -Id 'sql-server-express'
 
 AddToStatus "Configuring the SQL Server authentication mode to mixed mode"
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQLServer" -Name "LoginMode" -Value 2 | Out-Null
@@ -70,13 +74,13 @@ AddToStatus "Preparing SQL Server Studio Management (SSMS) installation (this mi
 . "c:\demo\SetupSSMS.ps1"
 
 AddToStatus "Installing LS Data Director Service"
-Install-GocPackage -Id 'ls-dd-service'
+Install-UscPackage -Id 'ls-dd-service'
 
 AddToStatus "Installing Update Service Server"
-Install-GocPackage -Id 'go-current-server'
+Install-UscPackage -Id 'go-current-server'
 
 AddToStatus "Installing Update Service Server Management"
-Install-GocPackage -Id 'go-current-server-management'
+Install-UscPackage -Id 'go-current-server-management'
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
@@ -104,7 +108,7 @@ $Arguments = @{
         WsPassword = $HCSWebServicesPassword
     }
 }
-Install-GocPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
+Install-UscPackage -Id 'ls-central-hcc-project' -Arguments $Arguments
 
 $ProjectJson = Get-Content -Path (Join-Path $HCCProjectDirectory 'Project.json') | ConvertFrom-Json
 $ProjectJson.WsPassword = $HCSWebServicesPassword
