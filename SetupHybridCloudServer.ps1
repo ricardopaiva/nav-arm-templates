@@ -47,7 +47,9 @@ if ($LASTEXITCODE -ne 0) {
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 Start-Sleep -Seconds 5
 
-AddToStatus "Will install go-current-client"
+Import-Module UpdateService
+
+AddToStatus "Will install go-current-client package"
 $totalRetries = 0
 do {
     $Failed = $false
@@ -65,9 +67,9 @@ do {
         Start-Sleep -Seconds 1 # wait for a seconds before next attempt.
         $Failed = $true
     }
-} while ($Failed) and ($totalRetries -lt 3) # or ($null -eq $LASTEXITCODE)
+} while (($Failed) -and ($totalRetries -lt 3))
 
-AddToStatus "Did install go-current-client"
+AddToStatus "Did install go-current-client package"
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
 AddToStatus "Installing SQL Server Express (this might take a while)"
