@@ -56,10 +56,16 @@ do {
     } catch { 
         $totalRetries += 1
         AddToStatus -color red "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
+        AddToStatus -color red "Error installing go-current-client - Total Retries: $($totalRetries)."
+
+        AddToStatus -color red "Error installing go-current-client: $($_)."
+        AddToStatus -color red "Error installing go-current-client - Exception: $($_.Exception)."
+        AddToStatus -color red "Error installing go-current-client - ScriptStackTrace: $($_.ScriptStackTrace)."
+        AddToStatus -color red "Error installing go-current-client - ErrorDetails: $($_.ErrorDetails)."
         Start-Sleep -Seconds 1 # wait for a seconds before next attempt.
         $Failed = $true
     }
-} while ($Failed) or ($totalRetries -lt 3) # or ($null -eq $LASTEXITCODE)
+} while ($Failed) and ($totalRetries -lt 3) # or ($null -eq $LASTEXITCODE)
 
 AddToStatus "Did install go-current-client"
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
