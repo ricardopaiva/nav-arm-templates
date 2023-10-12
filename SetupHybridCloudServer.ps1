@@ -34,7 +34,7 @@ New-Item $Folder -itemtype directory -ErrorAction ignore | Out-Null
 if (!(Test-Path $Filename)) {
     AddToStatus "Downloading Update Service Client Installer Script"
     $WebClient = New-Object System.Net.WebClient
-    $WebClient.DownloadFile("https://portal.lsretail.com/media/uiucpd5g/ls-central-latest.exe", $Filename)
+    $WebClient.DownloadFile("https://updateservice.lsretail.com/api/v1/installers/6c1d515b-9b40-4074-ae40-b921f0b2a67d/download", $Filename)
 }
 
 AddToStatus "Installing Update Service Client module"
@@ -52,7 +52,7 @@ try {
     Install-GocPackage -Id 'go-current-client'
 }
 catch {
-    AddToStatus "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
+    AddToStatus -color red "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
     Install-GocPackage -Id 'go-current-client'
 }
 
