@@ -56,6 +56,7 @@ do {
     } catch { 
         $totalRetries += 1
         AddToStatus -color red "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
+        Start-Sleep -Seconds 1 # wait for a seconds before next attempt.
         $Failed = $true
     }
 } while ($Failed) or ($totalRetries -lt 3) # or ($null -eq $LASTEXITCODE)
