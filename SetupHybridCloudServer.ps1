@@ -44,17 +44,18 @@ if ($LASTEXITCODE -ne 0) {
     return
 }
 
+Start-Sleep -Seconds 30  # Should be less.
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
-Start-Sleep -Seconds 5
 
 Import-Module UpdateService
+Import-Module GoCurrent
 
 AddToStatus "Will install go-current-client package"
 $totalRetries = 0
 do {
     $Failed = $false
     try {
-        Install-UscPackage -Id 'go-current-client'
+        Install-GocPackage -Id 'go-current-client'
     } catch { 
         $totalRetries += 1
         AddToStatus -color red "Error installing go-current-client: $($LASTEXITCODE). Retrying..."
