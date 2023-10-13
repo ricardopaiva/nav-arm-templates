@@ -16,7 +16,7 @@ AddToStatus "Who is running this: $(whoami)"
 AddToStatus "Finishing the Hybrid Cloud Components installation"
 Set-Location $HCCProjectDirectory
 
-AddToStatus "Installing the POS Master"
+AddToStatus "Installing the POS Master (this might take a while)"
 & .\UpdatePosMaster.ps1
 
 . "c:\demo\SetupDataDirectorConfig.ps1"
