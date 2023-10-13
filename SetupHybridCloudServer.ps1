@@ -38,17 +38,14 @@ if (!(Test-Path $Filename)) {
 }
 
 AddToStatus "Installing Update Service Client module"
-. "$Filename" /VERYSILENT /NORESTART /SUPPRESSMSGBOXES | Out-Null
+. "$Filename" -silent | Out-Null
 if ($LASTEXITCODE -ne 0) { 
     AddToStatus -color red "Error installing Update Service Client module: $($LASTEXITCODE)"
     return
 }
 
-Start-Sleep -Seconds 30  # Should be less.
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
-
 Import-Module UpdateService
-Import-Module GoCurrent
 
 AddToStatus "Will install go-current-client package"
 $totalRetries = 0
