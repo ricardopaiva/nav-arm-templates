@@ -84,14 +84,11 @@ AddToStatus "Installing LS Data Director Service"
 Install-UscPackage -Id 'ls-dd-service'
 
 AddToStatus "Installing Update Service Server"
-Install-UscPackage -Id 'go-current-server'
-
-AddToStatus "Installing Update Service Server Management"
-Install-UscPackage -Id 'go-current-server-management'
+Install-UscPackage -Id 'ls-update-service-server'
 
 $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath", "Machine")
 
-Import-Module GoCurrent
+Import-Module UpdateService
 Import-Module GoCurrentServer
 
 $ServerAssembly = [System.AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.FullName.StartsWith('LSRetail.GoCurrent.Server.Management')}
@@ -129,7 +126,7 @@ $env:PSModulePath = [System.Environment]::GetEnvironmentVariable("PSModulePath",
 AddToStatus "Downloading the Business Central license"
 if ($licenseFileUri) {
     $LicenseFileSourcePath = "c:\demo\license.bclicense"
-    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files')
+    $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
     Download-File -sourceUrl $licensefileuri -destinationFile $LicenseFileSourcePath
     Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
 }
@@ -138,7 +135,7 @@ else {
     {   
         $licenseFileName = 'DEV.bclicense'
         $LicenseFileSourcePath = "c:\demo\license.bclicense"
-        $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files')
+        $LicenseFileDestinationPath = (Join-Path $HCCProjectDirectory 'Files/License')
 
         $result = az storage blob download --file $LicenseFileSourcePath --name $licenseFileName --account-name $storageAccountName --container-name $storageContainerName --sas-token """$storageSasToken""" # --debug
         Copy-Item -Path $LicenseFileSourcePath -Destination $LicenseFileDestinationPath -Force
@@ -163,7 +160,7 @@ AddToStatus "Creating license package"
 
 AddToStatus "Downloading necessary package to the Update Service Server (this might take a while as the packages are downloaded from LS Retail's Update Service server)"
 & .\GetLsCentralPackages.ps1
-AddToStatus "Packages downloaded. You can view all packages on the server: http://localhost:8030"
+AddToStatus "Packages downloaded. You can view all packages on the server: http://localhost:8060"
 
 AddToStatus "Updating NewBundlePackage script to include the license package"
 $bundlePackage = Get-Content -Path (Join-Path $HCCProjectDirectory 'NewBundlePackage.ps1')
