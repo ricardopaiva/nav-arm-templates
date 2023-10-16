@@ -16,14 +16,17 @@ AddToStatus "Who is running this: $(whoami)"
 AddToStatus "Finishing the Hybrid Cloud Components installation"
 Set-Location $HCCProjectDirectory
 
+Start-Sleep -Seconds 60 # wait for 60 seconds, for IIS to start and Update Service API to be up and running.
+
 $totalRetries = 0
 do {
     $Failed = $false
     $response = $null
     try {
-        AddToStatus "Testing the connection to Update Service server: http://$($env:computername):8060/api/v1/Settings/server"
+        AddToStatus "Testing the connection to Update Service server: http://$($env:computername):8060/"
         $response = Invoke-WebRequest -UseBasicParsing -Uri "http://$($env:computername):8060/api/v1/Settings/server"
         $response.StatusCode
+        AddToStatus -color Green "Connection tested successfully to Update Service server: http://$($env:computername):8060"
     } catch { 
         AddToStatus -color red "Error connecting to the Update Service server: $($_)."
         AddToStatus -color red "Retrying..."
