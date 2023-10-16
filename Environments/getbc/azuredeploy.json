@@ -230,7 +230,7 @@
         "OperatingSystem": "[parameters('OperatingSystem')]",
         "imagePublisher": "[if(equals(variables('OperatingSystem'),'Windows 10'),'MicrosoftWindowsDesktop','MicrosoftWindowsServer')]",
         "imageOffer": "[if(equals(variables('OperatingSystem'),'Windows 10'),'Windows-10','WindowsServer')]",
-        "imageSku": "[if(equals(variables('OperatingSystem'),'Windows 10'),'rs5-pro',if(equals(variables('OperatingSystem'),'Windows Server 2019'),'2019-Datacenter','2022-Datacenter')))]",
+        "imageSku": "[if(equals(variables('OperatingSystem'),'Windows 10'),'rs5-pro',if(equals(variables('OperatingSystem'),'Windows Server 2019'),'2019-Datacenter','2022-Datacenter'))]",
         "storageAccountType": "[parameters('StorageAccountType')]",
         "OSDiskName": "[concat(variables('vmName'),'_osdisk')]",
         "publicIPAddressName": "[parameters('publicIPAddressName')]",
