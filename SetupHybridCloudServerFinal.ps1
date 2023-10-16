@@ -36,7 +36,7 @@ do {
         Start-Sleep -Seconds 20 # wait for 20 seconds before next attempt.
         $Failed = $true
     }
-} while (($Failed) -and ($totalRetries -lt 3) -and ($response.StatusCode -eq 200))
+} while (($Failed) -and ($totalRetries -lt 3) -and ($response.StatusCode -ne 200))
 
 AddToStatus "Installing the POS Master (this might take a while)"
 & .\UpdatePosMaster.ps1
