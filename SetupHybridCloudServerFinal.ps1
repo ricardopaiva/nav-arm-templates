@@ -25,18 +25,14 @@ do {
         $response = Invoke-WebRequest -UseBasicParsing -Uri "http://$($env:computername):8060/api/v1/Settings/server"
         $response.StatusCode
     } catch { 
-        $totalRetries += 1
-        AddToStatus -color red "Error connecting to the Update Service server. Status code: $($response.StatusCode). Retrying..."
-        AddToStatus -color red "Error connecting to the Update Service server. Total Retries: $($totalRetries)."
-
         AddToStatus -color red "Error connecting to the Update Service server: $($_)."
-        AddToStatus -color red "Error connecting to the Update Service server. Exception: $($_.Exception)."
-        AddToStatus -color red "Error connecting to the Update Service server. ScriptStackTrace: $($_.ScriptStackTrace)."
-        AddToStatus -color red "Error connecting to the Update Service server. ErrorDetails: $($_.ErrorDetails)."
+        AddToStatus -color red "Retrying..."
+        AddToStatus -color red "Total Retries: $($totalRetries)."
         Start-Sleep -Seconds 20 # wait for 20 seconds before next attempt.
+        $totalRetries += 1
         $Failed = $true
     }
-} while (($Failed) -and ($totalRetries -lt 3) -and ($response.StatusCode -ne 200))
+} while (($Failed) -and ($totalRetries -lt 10) -and ($response.StatusCode -ne 200))
 
 AddToStatus "Installing the POS Master (this might take a while)"
 & .\UpdatePosMaster.ps1
