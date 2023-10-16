@@ -16,7 +16,28 @@ AddToStatus "Who is running this: $(whoami)"
 AddToStatus "Finishing the Hybrid Cloud Components installation"
 Set-Location $HCCProjectDirectory
 
-Start-Sleep -Seconds 30 # wait for 30 seconds before next attempt, for IIS (US Server) and other services to start, avoiding connection issues when running the UpdatePosMaster.ps1
+$totalRetries = 0
+do {
+    $Failed = $false
+    $response = $null
+    try {
+        AddToStatus "Testing the connection to Update Service server: http://$($env:computername):8060/api/v1/Settings/server"
+        $response = Invoke-WebRequest -UseBasicParsing -Uri "http://$($env:computername):8060/api/v1/Settings/server"
+        $response.StatusCode
+    } catch { 
+        $totalRetries += 1
+        AddToStatus -color red "Error connecting to the Update Service server. Status code: $($response.StatusCode). Retrying..."
+        AddToStatus -color red "Error connecting to the Update Service server. Total Retries: $($totalRetries)."
+
+        AddToStatus -color red "Error connecting to the Update Service server: $($_)."
+        AddToStatus -color red "Error connecting to the Update Service server. Exception: $($_.Exception)."
+        AddToStatus -color red "Error connecting to the Update Service server. ScriptStackTrace: $($_.ScriptStackTrace)."
+        AddToStatus -color red "Error connecting to the Update Service server. ErrorDetails: $($_.ErrorDetails)."
+        Start-Sleep -Seconds 20 # wait for 20 seconds before next attempt.
+        $Failed = $true
+    }
+} while (($Failed) -and ($totalRetries -lt 3) -and ($response.StatusCode -eq 200))
+
 AddToStatus "Installing the POS Master (this might take a while)"
 & .\UpdatePosMaster.ps1
 
