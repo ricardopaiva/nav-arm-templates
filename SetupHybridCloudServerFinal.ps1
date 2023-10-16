@@ -16,6 +16,7 @@ AddToStatus "Who is running this: $(whoami)"
 AddToStatus "Finishing the Hybrid Cloud Components installation"
 Set-Location $HCCProjectDirectory
 
+Start-Sleep -Seconds 30 # wait for 30 seconds before next attempt, for IIS (US Server) and other services to start, avoiding connection issues when running the UpdatePosMaster.ps1
 AddToStatus "Installing the POS Master (this might take a while)"
 & .\UpdatePosMaster.ps1
 
