@@ -26,7 +26,6 @@ if (!(Test-Path function:TestContainerSasToken)) {
         try {
             $storageContext = New-AzStorageContext -StorageAccountName $StorageAccountName -SasToken $StorageSasToken
             Get-AzStorageBlob -Container $StorageContainerName -Context $StorageContext -ErrorAction Stop
-            AddToStatus -color Green "Storage Sas Token seems to be valid."
         }
         catch
         {
