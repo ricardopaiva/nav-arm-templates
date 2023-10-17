@@ -18,4 +18,4 @@ choco feature enable -n allowGlobalConfirmation
 AddToStatus "Install Edge"
 choco install microsoft-edge
 
-Install-Module Az.Storage
+Install-Module Az.Storage -Force
